@@ -1,5 +1,9 @@
 <template>
-  <book-form/>
+  <v-row>
+    <v-col cols="12" md="6" offset-md="3">
+      <book-form/>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
