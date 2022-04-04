@@ -1,15 +1,26 @@
 <template>
-  <v-app>
-    <v-row style="margin-top: 50px; margin-left: 50px">
-      <nuxt-link to="/">Početna</nuxt-link>
-      <nuxt-link to="/knjige">Knjige</nuxt-link>
-    </v-row>
-    <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-container>
+    <v-app>
+      <v-app-bar
+        color=""
+        flat
+        prominent
+      ></v-app-bar>
+      <v-app-bar
+        flat
+        dense
+      >
+        <nuxt-link style="text-decoration: none;" to="/"><v-btn tile text>Početna</v-btn></nuxt-link>
+        <nuxt-link style="text-decoration: none;" to="knjige"><v-btn tile text>Za Autore</v-btn></nuxt-link>
+        <nuxt-link style="text-decoration: none;" to="publikacije"><v-btn tile text>Publikacije</v-btn></nuxt-link>
+      </v-app-bar>
+      <v-main>
+
+          <Nuxt />
+      </v-main>
+    </v-app>
+  </v-container>
+
 </template>
 
 <script>

@@ -1,84 +1,80 @@
 <template>
-  <v-container>
-    <v-card
-      elevation="24"
-      style="padding:20px; margin-top: 20px;"
+
+  <v-card
+    tile
+    style="padding:20px;"
+    elevation="0"
+  >
+    <v-card-title>Dodajte knjigu</v-card-title>
+    <v-form
+      @submit.prevent="submitBook"
     >
-      <v-card-title>Dodajte knjigu</v-card-title>
-      <v-form
-        @submit.prevent="submitBook"
-      >
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field
-              label="Naslov"
-              v-model="book.name"
-            ></v-text-field>
-            <v-text-field
-              label="ISBN"
-              v-model="book.isbn"
-            ></v-text-field>
-            <v-autocomplete
-              chips
-              multiple
-              deletable-chips
-              clearable
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-text-field
+            label="Naslov"
+            v-model="book.name"
+          ></v-text-field>
+          <v-text-field
+            label="ISBN"
+            v-model="book.isbn"
+          ></v-text-field>
+          <v-autocomplete
+            chips
+            multiple
+            deletable-chips
+            clearable
 
-              label="Autori"
+            label="Autori"
 
-              :items="authors"
-              :item-text="setName"
-              item-value="id"
+            :items="authors"
+            :item-text="setName"
+            item-value="id"
 
-              v-model="book.relations.authors.data"
+            v-model="book.relations.authors.data"
 
-            ></v-autocomplete>
+          ></v-autocomplete>
 
-            <v-autocomplete
-              chips
-              multiple
-              deletable-chips
-              clearable
+          <v-autocomplete
+            chips
+            multiple
+            deletable-chips
+            clearable
 
-              label="Znanosti"
+            label="Znanosti"
 
-              :items="sciences"
-              item-text="name"
-              item-value="id"
+            :items="sciences"
+            item-text="name"
+            item-value="id"
 
-              v-model="book.relations.sciences.data"
-            ></v-autocomplete>
-          </v-col>
-          <v-col cols="12" md="6">
-            <dropzone
-              v-on:vdropzone-sending="sendingEventImages"
-              @vdropzone-success="onSuccess"
-              @vdropzone-complete="onComplete"
-              ref="myDropzone" id="dropzone" :options="dropzoneOptionsImages">
-              <div class="dropzone-custom-content">
-                <h3>Slika</h3>
-              </div>
-            </dropzone>
+            v-model="book.relations.sciences.data"
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="6">
+          <dropzone
+            v-on:vdropzone-sending="sendingEventImages"
+            @vdropzone-success="onSuccess"
+            @vdropzone-complete="onComplete"
+            ref="myDropzone" id="dropzone" :options="dropzoneOptionsImages">
+            <div class="dropzone-custom-content">
+              <h3>Slika</h3>
+            </div>
+          </dropzone>
 
-            <dropzone
-              v-on:vdropzone-sending="sendingEventBooks"
-              @vdropzone-success="onSuccess"
-              @vdropzone-complete="onComplete"
-              ref="myDropzone" id="foo" :options="dropzoneOptionsBooks">
-              <div class="dropzone-custom-content">
-                <h3>Knjige</h3>
-              </div>
-            </dropzone>
-          </v-col>
-        </v-row>
-
-
-
-
-        <v-btn type="submit">Pošalji</v-btn>
-      </v-form>
-    </v-card>
-  </v-container>
+          <dropzone
+            v-on:vdropzone-sending="sendingEventBooks"
+            @vdropzone-success="onSuccess"
+            @vdropzone-complete="onComplete"
+            ref="dropzone" id="foo" :options="dropzoneOptionsBooks">
+            <div class="dropzone-custom-content">
+              <h3>Knjige</h3>
+            </div>
+          </dropzone>
+        </v-col>
+      </v-row>
+      <v-btn text tile type="submit">Pošalji</v-btn>
+    </v-form>
+  </v-card>
 </template>
 
 <script>
@@ -96,6 +92,8 @@ export default {
       autoProcessQueue: false,
       url: "http://127.0.0.1:8000/api/files",
       acceptedFiles: 'image/*',
+      thumbnailWidth: 150,
+      thumbnailHeight: 150,
     },
     dropzoneOptionsBooks: {
       addRemoveLinks: true,
@@ -106,6 +104,7 @@ export default {
     },
 
     dropZoneRefs: [],
+    bookFileRefs: [],
 
     authors: [],
     sciences: [],
@@ -129,10 +128,10 @@ export default {
 
   mounted() {
     this.dropZoneRefs = this.$refs.myDropzone;
+    this.bookFileRefs = this.$refs.dropzone;
     this.getAuthors();
     this.getSciences();
     this.getBooks();
-    this.getRoutes();
 
   },
   methods: {
@@ -140,12 +139,6 @@ export default {
     async getBooks() {
       await this.$axios.$get('/books').then(response => {
         console.log('Books: ' , response);
-      })
-    },
-
-    async getRoutes() {
-      await this.$axios.$get('/routes').then(response => {
-        console.log('Routes: ' , response);
       })
     },
 
@@ -172,17 +165,28 @@ export default {
         console.log(response);
         this.book_id = response.id;
         this.uploadFiles();
+        this.reset();
       }).catch((err) => {
-        console.log(err)
+        console.log(err);
+        this.reset();
       })
 
     },
-    getRefs() {
-      console.log(this.dropZoneRefs)
-    },
 
     uploadFiles() {
-      this.dropZoneRefs.processQueue()
+      this.dropZoneRefs.processQueue();
+      this.bookFileRefs.processQueue();
+
+    },
+
+    // Reset forme povodom uploada
+    reset() {
+      this.book.name = '';
+      this.book.isbn = '';
+      this.book.relations.authors.data = [];
+      this.book.relations.sciences.data = [];
+      // this.dropZoneRefs.removeAllFiles(true);
+      // this.bookFileRefs.removeAllFiles(true);
     },
 
     // Prilikom uspijeha spanja slike
@@ -200,13 +204,15 @@ export default {
 
     // Prije slanja slike
     sendingEventImages(file, xhr, formData) {
+      console.log("Book id image", this.book_id)
       formData.append('book_id', this.book_id);
       formData.append('folder', 'images');
     },
-    // Prije slanja slike
+    // Prije slanja knjige
     sendingEventBooks(file, xhr, formData) {
-      formData.append('folder', 'books');
+      console.log("Book id book", this.book_id)
       formData.append('book_id', this.book_id);
+      formData.append('folder', 'books');
     }
   }
 }
