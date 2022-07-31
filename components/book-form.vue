@@ -25,6 +25,8 @@
             deletable-chips
             clearable
 
+            auto-select-first
+
             label="Autori"
 
             :items="authors"
@@ -40,6 +42,8 @@
             multiple
             deletable-chips
             clearable
+
+            auto-select-first
 
             label="Znanosti"
 
@@ -94,6 +98,7 @@ export default {
       acceptedFiles: 'image/*',
       thumbnailWidth: 150,
       thumbnailHeight: 150,
+      maxFilesize: 2,
     },
     dropzoneOptionsBooks: {
       addRemoveLinks: true,
@@ -101,7 +106,11 @@ export default {
       autoProcessQueue: false,
       url: "http://127.0.0.1:8000/api/files",
       acceptedFiles: '.pdf',
+      thumbnailWidth: 100,
+      thumbnailHeight: 300,
+      maxFilesize: 50,
     },
+
 
     dropZoneRefs: [],
     bookFileRefs: [],
@@ -113,6 +122,7 @@ export default {
     book: {
       'name': '',
       'isbn': '',
+      'slug': '',
       'relations': {
         'authors': {
           'method': 'attach',
