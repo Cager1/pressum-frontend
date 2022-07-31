@@ -1,5 +1,4 @@
 <template>
-  <v-container>adasd</v-container>
 
 </template>
 
