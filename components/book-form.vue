@@ -92,7 +92,6 @@ export default {
   data: () => ({
     dropzoneOptionsImages: {
       addRemoveLinks: true,
-      maxFiles: 1,
       autoProcessQueue: false,
       url: "http://127.0.0.1:8000/api/files",
       acceptedFiles: 'image/*',
@@ -125,11 +124,11 @@ export default {
       'slug': '',
       'relations': {
         'authors': {
-          'method': 'attach',
+          'method': 'sync',
           'data': [],
         },
         'sciences': {
-          'method': 'attach',
+          'method': 'sync',
           'data': [],
         },
       }
