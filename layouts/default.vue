@@ -11,7 +11,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <nuxt-link class="d-block mt-4" v-for="(link, index) in links" :to="link.to" style="text-decoration: none !important;">
+          <nuxt-link class="d-block mt-4" to="/" style="text-decoration: none !important;">
             <v-btn
               tile
               text
@@ -19,7 +19,37 @@
               width="100%"
               x-large
 
-            ><v-icon class="mr-10">{{ link.icon }}</v-icon>{{ link.title }}<v-spacer></v-spacer></v-btn>
+            ><v-icon class="mr-10">mdi-home</v-icon>Početna<v-spacer></v-spacer></v-btn>
+          </nuxt-link>
+          <nuxt-link class="d-block mt-4" to="/knjige" style="text-decoration: none !important;">
+            <v-btn
+              tile
+              text
+              color="grey darken-2"
+              width="100%"
+              x-large
+
+            ><v-icon class="mr-10">mdi-book</v-icon>Knjige<v-spacer></v-spacer></v-btn>
+          </nuxt-link>
+          <nuxt-link class="d-block mt-4" to="/publikacije" style="text-decoration: none !important;">
+            <v-btn
+              tile
+              text
+              color="grey darken-2"
+              width="100%"
+              x-large
+
+            ><v-icon class="mr-10">mdi-newspaper</v-icon>Publikacije<v-spacer></v-spacer></v-btn>
+          </nuxt-link>
+          <nuxt-link v-if="user.role_id === 1 || user.role_id === 2" class="d-block mt-4" to="/admin" style="text-decoration: none !important;">
+            <v-btn
+              tile
+              text
+              color="grey darken-2"
+              width="100%"
+              x-large
+
+            ><v-icon class="mr-10">mdi-shield-account</v-icon>Admin<v-spacer></v-spacer></v-btn>
           </nuxt-link>
         </v-col>
       </v-row>
@@ -34,13 +64,37 @@
         >
       </nuxt-link>
       <v-spacer></v-spacer>
-      <nuxt-link class="d-none d-sm-flex" v-for="(link, index) in links" :to="link.to" style="text-decoration: none !important; height: 100%">
+      <nuxt-link class="d-none d-sm-flex"  to="/" style="text-decoration: none !important; height: 100%">
         <v-btn
           text
           color="white"
           height="100%"
           tile
-        >{{ link.title }}</v-btn>
+        >Početna</v-btn>
+      </nuxt-link>
+      <nuxt-link class="d-none d-sm-flex"  to="/knjige" style="text-decoration: none !important; height: 100%">
+        <v-btn
+          text
+          color="white"
+          height="100%"
+          tile
+        >Knjige</v-btn>
+      </nuxt-link>
+      <nuxt-link class="d-none d-sm-flex"  to="/publikacije" style="text-decoration: none !important; height: 100%">
+        <v-btn
+          text
+          color="white"
+          height="100%"
+          tile
+        >Publikacije</v-btn>
+      </nuxt-link>
+      <nuxt-link v-if="user.role_id === 1 || user.role_id === 2" class="d-none d-sm-flex"  to="/admin" style="text-decoration: none !important; height: 100%">
+        <v-btn
+          text
+          color="white"
+          height="100%"
+          tile
+        >Admin</v-btn>
       </nuxt-link>
       <v-btn
         plain
@@ -51,8 +105,11 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-main class="mb-16">
-      <nuxt />
+    <v-main style="min-height: 500px !important;" class="mb-16">
+      <nuxt v-if="!loading" />
+      <v-overlay :value="loading">
+        <v-progress-circular indeterminate size="128" width="10"></v-progress-circular>
+      </v-overlay>
     </v-main>
     <v-footer style="background: rgb(76, 76, 76); color: lightgrey">
       <v-container>
@@ -91,7 +148,7 @@
 
 
     </v-footer>
-
+    <application-snackbar />
   </v-app>
 
 </template>
@@ -99,34 +156,27 @@
 <script>
 export default {
   name: 'DefaultLayout',
+
   data () {
     return {
       navDrawer: false,
-
-      links: [
-        {
-          title: 'Početna',
-          icon: 'mdi-home',
-          to: '/'
-        },
-        {
-          title: 'Admin',
-          icon: 'mdi-shield-crown',
-          to: '/admin'
-        },
-        {
-          title: 'Knjige',
-          icon: 'mdi-book',
-          to: '/knjige'
-        },
-        {
-          title: 'Publikacije',
-          icon: 'mdi-newspaper',
-          to: '/publikacije'
-        }
-      ],
     }
   },
+
+  mounted() {
+  },
+  computed: {
+    user() {
+      return this.$store.getters["userStore/userGetter"];
+    },
+
+    loading() {
+      return this.$store.getters["userStore/loadingGetter"];
+    },
+  },
+
+  methods: {
+  }
 }
 </script>
 

@@ -74,7 +74,7 @@
               <v-col cols="12" sm="5" >
                 <v-row class="mr-5">
                   <v-col>
-                    <v-select flate :items="sortItems" label="Sortiraj po"></v-select>
+                    <v-select flate :items="sortItems" v-model="sortBy" label="Sortiraj po"></v-select>
                   </v-col>
                   <v-col align-self="center" cols="2">
                     <v-btn style="padding-left: 0" icon @click="sort">
@@ -175,10 +175,11 @@ export default {
       { text: 'Datum objave', value: 'created_at' },
       { text: 'Naziv', value: 'name' },
     ],
+    sortBy: "created_at",
+    sortDesc: true,
 
     filterSciences: [],
     filterAuthors: [],
-    sortDesc: true,
     querys: ['files', 'authors', 'sciences'],
 
     sciences: [],
@@ -230,6 +231,51 @@ export default {
 
     },
 
+    sortBy: function(val) {
+      this.timer = setTimeout(() => {
+        switch (this.lastUsedQuery) {
+          case 0:
+            this.getBooks();
+            break;
+          case 1:
+            this.filterBooksWithRelation('sciences', 'id', this.filterSciences);
+            break;
+          case 2:
+            this.filterBooksWithRelation('authors', 'id', this.filterAuthors);
+            break;
+          case 3:
+            this.searchBooks(this.search);
+            break;
+          default:
+            this.getBooks();
+            break;
+        }
+      }, 700)
+    },
+
+    sortDesc: function(val) {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        switch (this.lastUsedQuery) {
+          case 0:
+            this.getBooks();
+            break;
+          case 1:
+            this.filterBooksWithRelation('sciences', 'id', this.filterSciences);
+            break;
+          case 2:
+            this.filterBooksWithRelation('authors', 'id', this.filterAuthors);
+            break;
+          case 3:
+            this.searchBooks(this.search);
+            break;
+          default:
+            this.getBooks();
+            break;
+        }
+      }, 700)
+    },
+
     showNumberOfBooksModel: function(val) {
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
@@ -275,7 +321,7 @@ export default {
       this.lastUsedQuery = 0;
       this.breadcrumbs = []
       await this.$axios.$get('/books?perPage=' + this.showNumberOfBooksModel + '&with[]=' + this.querys[0] + '&with[]=' +
-        this.querys[1] + '&with[]=' + this.querys[2] + '&page=' + page + "&sortBy=name" + "&sortDesc=" + this.sortDesc).then(response => {
+        this.querys[1] + '&with[]=' + this.querys[2] + '&page=' + page + "&sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc).then(response => {
         this.books = response;
         this.page = response.current_page;
         this.breadcrumbs.push({
@@ -315,7 +361,7 @@ export default {
         for (const q of this.querys) {
           query += '&with[]=' + q
         }
-        await this.$axios.$get(query).then(response => {
+        await this.$axios.$get(query + "&sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc).then(response => {
           // console.log(response);
           this.books = response;
           this.page = response.current_page;
@@ -333,7 +379,7 @@ export default {
       for (const q of this.querys) {
         query += '&with[]=' + q
       }
-      await this.$axios.$get(query).then(response => {
+      await this.$axios.$get(query + "&sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc).then(response => {
         this.books = response;
         this.breadcrumbs.push({
           text: 'Pretraga: ' + value,
@@ -367,12 +413,9 @@ export default {
       this.sortDesc = !this.sortDesc;
       if (this.sortDesc) {
         document.querySelector('#sortButton').style.transform = 'rotate(0deg)';
-        this.getBooks();
       } else {
         document.querySelector('#sortButton').style.transform = 'rotate(180deg)';
-        this.getBooks();
       }
-      console.log(this.sortDesc);
     },
   }
 }

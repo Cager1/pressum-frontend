@@ -1,19 +1,23 @@
 <template>
 
   <v-card
-    tile
     style="padding:20px;"
-    elevation="0"
+    elevation="2"
+    max-width="500"
+
   >
-    <v-card-title>Dodajte znanost</v-card-title>
+    <v-card-title style="color: #084776; padding-left: 0 !important;">Dodavanje znanosti</v-card-title>
     <v-form
       @submit.prevent="submitScience"
     >
       <v-text-field
         label="Ime"
         v-model="science.name"
+        color="#084776"
+        outlined
       ></v-text-field>
-      <v-btn text tile type="submit">Pošalji</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn text  color="white" style="background: red" type="submit">Pošalji</v-btn>
     </v-form>
   </v-card>
 </template>
