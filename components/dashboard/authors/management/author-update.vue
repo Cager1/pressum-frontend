@@ -112,6 +112,52 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+                  <v-dialog v-model="changeAuthorDialog" width="500px">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        text
+                        x-small
+                        style="background: #084776; color: white; margin-left: 10px">
+                        Izmjeni
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title class="headline">Izmjeni autora</v-card-title>
+                      <v-card-text>
+                        <v-text-field
+                          v-model="model.name"
+                          label="Ime"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          v-model="model.last_name"
+                          label="Prezime"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          v-model="model.email"
+                          label="E-mail"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          v-model="model.orcid"
+                          label="ORCID"
+                          required
+                        ></v-text-field>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" text @click="changeAuthor(model)">
+                          Izmjeni
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="changeAuthorDialog = false">
+                          Odustani
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-card-actions>
               </v-col>
               <v-divider vertical></v-divider>
@@ -184,6 +230,7 @@ export default {
     bookToDeleteName: null,
 
     deleteAuthorDialog: false,
+    changeAuthorDialog: false,
 
     text: "",
     snackbar: false,
@@ -259,6 +306,7 @@ export default {
         url: 'updateAuthor/' + author,
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         data: {
           user_uid: user
@@ -297,6 +345,31 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+
+    // change author
+    async changeAuthor(author) {
+      const options = {
+        method: 'PUT',
+        url: 'updateAuthor/' + author.id,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          name: author.name,
+          last_name: author.last_name,
+          email: author.email,
+          orcid: author.orcid,
+        }
+      }
+      await this.$axios(options).then(response => {
+        this.changeAuthorDialog = false
+        this.model.name = response.data
+        this.$notifier.showMessage({ content: 'Autor uspješno izmjenjen', color: 'success' })
+      }).catch(error => {
+        this.changeAuthorDialog = false
+        this.$notifier.showMessage({ content: 'Greška prilikom izmjene autora', color: 'error' })
+      })
     },
 
     getImage () {

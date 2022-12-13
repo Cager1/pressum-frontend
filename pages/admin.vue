@@ -63,7 +63,7 @@ export default {
         items: [
           {
             title: "Pregled",
-            components: ["dashboardUsersOverviewLatestUsers","dashboardUsersOverviewNewUsersGraph"]
+            components: ["dashboardUsersOverviewLatestUsers","dashboardUsersOverviewNewUsersGraph",]
           },
           {
             title: "Upravljanje",

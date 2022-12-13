@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-btn link href="http://localhost:8000/oauth/login">Login</v-btn>
+    <v-btn link :href="`http://localhost:8000/oauth/login?redirect_to=http://localhost:3000`">Login</v-btn>
     <v-btn @click="logout" link href="http://localhost:8000/oauth/logout?redirect_to=http://localhost:3000">Logout</v-btn>
     <div v-if="logged">Logged in</div>
     <div v-else>Not logged in</div>
@@ -18,7 +18,6 @@ export default {
       logged: false,
     }
   },
-
 
   methods: {
     logout() {

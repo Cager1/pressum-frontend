@@ -80,7 +80,7 @@ export default {
   methods: {
     async submitAuthor() {
       this.disabled = true;
-      await this.$axios.$post('/createAuthor', this.author).then(response => {
+      await this.$axios.$post('/authors', this.author).then(response => {
         console.log("autor sumbited:", response);
         this.$notifier.showMessage({ content: 'Autor uspješno napravljen', color: 'success' })
         this.reset();

@@ -17,7 +17,16 @@
         <v-card-subtitle v-text="'ISBN: ' + book.isbn"></v-card-subtitle>
       </v-col>
     </v-row>
-    <embed :src="bookPDF" height="1000px" type="application/pdf" width="100%"/>
+    <v-row>
+      <v-col cols="12" offset-sm="2" sm="8">
+        <v-card-title>
+          Pretpregled
+        </v-card-title>
+        <embed :src="bookPDF" height="1000px" type="application/pdf" width="100%"/>
+      </v-col>
+
+    </v-row>
+
   </v-container>
 </template>
 

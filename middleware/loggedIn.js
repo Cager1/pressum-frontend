@@ -9,6 +9,7 @@ export default async function ({ app, store, $axios, redirect,}) {
         store.commit('userStore/setVisited', true)
       }).catch((error) => {
         console.log("current user is logged out");
+
         store.commit('userStore/setVisited', true)
       })
   }

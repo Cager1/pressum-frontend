@@ -68,7 +68,7 @@
           <dropzone
             v-on:vdropzone-sending="sendingEventImages"
             @vdropzone-success="onSuccess"
-            @vdropzone-complete="onComplete"
+            @vdropzone-complete="onCompleteImage"
             ref="myDropzone" id="dropzone" :options="dropzoneOptionsImages">
             <div class="dropzone-custom-content">
               <h3>Slika</h3>
@@ -78,7 +78,7 @@
           <dropzone
             v-on:vdropzone-sending="sendingEventBooks"
             @vdropzone-success="onSuccess"
-            @vdropzone-complete="onComplete"
+            @vdropzone-complete="onCompletePdf"
             ref="dropzone" id="foo" :options="dropzoneOptionsBooks">
             <div class="dropzone-custom-content">
               <h3>Knjige</h3>
@@ -195,10 +195,8 @@ export default {
     reset() {
       this.book.name = '';
       this.book.isbn = '';
-      this.book.authors = [];
-      this.book.sciences = [];
-      // this.dropZoneRefs.removeAllFiles(true);
-      // this.bookFileRefs.removeAllFiles(true);
+      this.book.authors.data = [];
+      this.book.sciences.data = [];
     },
 
     // Prilikom uspijeha spanja slike
@@ -206,10 +204,16 @@ export default {
       console.log('success:');
       console.log(file)
       console.log(response);
+
     },
 
     // Po završetku uploada
-    onComplete(response) {
+    onCompleteImage(response) {
+      console.log('Complete:');
+      console.log(response)
+    },
+
+    onCompletePdf(response) {
       console.log('Complete:');
       console.log(response)
     },

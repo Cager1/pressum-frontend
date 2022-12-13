@@ -29,7 +29,7 @@
               width="100%"
               x-large
 
-            ><v-icon class="mr-10">mdi-book</v-icon>Knjige<v-spacer></v-spacer></v-btn>
+            ><v-icon class="mr-10">mdi-book</v-icon>Moje Knjige<v-spacer></v-spacer></v-btn>
           </nuxt-link>
           <nuxt-link class="d-block mt-4" to="/publikacije" style="text-decoration: none !important;">
             <v-btn
@@ -41,8 +41,9 @@
 
             ><v-icon class="mr-10">mdi-newspaper</v-icon>Publikacije<v-spacer></v-spacer></v-btn>
           </nuxt-link>
-          <nuxt-link v-if="user.role_id === 1 || user.role_id === 2" class="d-block mt-4" to="/admin" style="text-decoration: none !important;">
+          <nuxt-link v-if="user.role !== undefined" class="d-block mt-4" to="/admin" style="text-decoration: none !important;">
             <v-btn
+              v-if="user.role.name === 'Super Admin' || user.role.name === 'Admin'"
               tile
               text
               color="grey darken-2"
@@ -51,6 +52,28 @@
 
             ><v-icon class="mr-10">mdi-shield-account</v-icon>Admin<v-spacer></v-spacer></v-btn>
           </nuxt-link>
+          <a v-if="logged" class="d-block mt-4" :href="'http://localhost:8000/oauth/logout?redirect_to=http://localhost:3000'" style="text-decoration: none !important;">
+            <v-btn
+              tile
+              text
+              color="grey darken-2"
+              width="100%"
+              x-large
+              @click="logout"
+
+            ><v-icon class="mr-10">mdi-logout</v-icon>Odjava<v-spacer></v-spacer></v-btn>
+          </a>
+          <a v-else class="d-block mt-4" :href="`http://localhost:8000/oauth/login?redirect_to=http://localhost:3000`" style="text-decoration: none !important;">
+            <v-btn
+              tile
+              text
+              color="grey darken-2"
+              width="100%"
+              x-large
+
+            ><v-icon class="mr-10">mdi-login</v-icon>Prijava<v-spacer></v-spacer></v-btn>
+          </a>
+
         </v-col>
       </v-row>
 
@@ -72,13 +95,14 @@
           tile
         >Početna</v-btn>
       </nuxt-link>
-      <nuxt-link class="d-none d-sm-flex"  to="/knjige" style="text-decoration: none !important; height: 100%">
+      <nuxt-link v-if="user.role !== undefined" class="d-none d-sm-flex"  to="/knjige" style="text-decoration: none !important; height: 100%">
         <v-btn
+          v-if="user.role.name !== 'Korisnik'"
           text
           color="white"
           height="100%"
           tile
-        >Knjige</v-btn>
+        >Moje Knjige</v-btn>
       </nuxt-link>
       <nuxt-link class="d-none d-sm-flex"  to="/publikacije" style="text-decoration: none !important; height: 100%">
         <v-btn
@@ -88,14 +112,33 @@
           tile
         >Publikacije</v-btn>
       </nuxt-link>
-      <nuxt-link v-if="user.role_id === 1 || user.role_id === 2" class="d-none d-sm-flex"  to="/admin" style="text-decoration: none !important; height: 100%">
+      <nuxt-link v-if="user.role !== undefined" class="d-none d-sm-flex"  to="/admin" style="text-decoration: none !important; height: 100%">
         <v-btn
+          v-if="user.role.name === 'Super Admin' || user.role.name === 'Admin'"
           text
           color="white"
           height="100%"
           tile
         >Admin</v-btn>
       </nuxt-link>
+      <a v-if="logged"  class="d-none d-sm-flex" :href="'http://localhost:8000/oauth/logout?redirect_to=http://localhost:3000'"  style="text-decoration: none !important; height: 100%">
+      <v-btn
+        tile
+        text
+        color="white"
+        height="100%"
+        @click="logout"
+      >Odjava</v-btn>
+      </a>
+      <a v-else  class="d-none d-sm-flex" :href="`http://localhost:8000/oauth/login?redirect_to=http://localhost:3000`"  style="text-decoration: none !important; height: 100%">
+        <v-btn
+          tile
+          text
+          color="white"
+          height="100%"
+
+        >Prijava</v-btn>
+      </a>
       <v-btn
         plain
         class="d-sm-none mr-5"
@@ -144,9 +187,6 @@
         <v-divider color="grey"></v-divider>
         <p class="mr-4 mt-5 text-center">Copyright ©2022 Sveučilište u Mostaru. Sva prava pridržana. Razvio i dizajnirao Centar za informacijske tehnologije Sveučilišta u Mostaru – SUMIT</p>
       </v-container>
-
-
-
     </v-footer>
     <application-snackbar />
   </v-app>
@@ -160,10 +200,13 @@ export default {
   data () {
     return {
       navDrawer: false,
+      logged: false,
     }
   },
 
   mounted() {
+    console.log(this.user)
+    this.loggedIn();
   },
   computed: {
     user() {
@@ -176,6 +219,14 @@ export default {
   },
 
   methods: {
+    logout() {
+      this.$store.commit("userStore/logoutUser");
+    },
+
+    async loggedIn() {
+      console.log(Object.keys(this.user).length)
+      this.logged = Object.keys(this.$store.getters['userStore/userGetter']).length > 0;
+    },
   }
 }
 </script>

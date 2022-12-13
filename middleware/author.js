@@ -3,8 +3,7 @@ export default async function ({ store, $axios, redirect }) {
     .then((response) => {
       store.commit('userStore/setUser', response.data)
       const user = store.getters['userStore/userGetter']
-      console.log("user in middleware", user)
-      if (user.role.name !== "Super Admin" && user.role.name !== "Admin") {
+      if (user.role.name === "Korisnik") {
         redirect('/')
       }
     }).catch((error) => {

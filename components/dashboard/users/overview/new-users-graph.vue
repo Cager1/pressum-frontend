@@ -51,40 +51,43 @@ export default {
     },
 
     async getNumberOfUsersFromLastSixMonths() {
-      const users = await this.$axios.$get('/usersLastSixMonths');
+      await this.$axios.$get('/usersLastSixMonths').then(response => {
+        const users = response;
+        console.log("last 6", users);
 
-      // get current month number
-      let today = new Date();
-      let month = today.getMonth() + 1;
+        // get current month number
+        let today = new Date();
+        let month = today.getMonth() + 1;
 
-      if (users.length < 7) {
-        for (let i = 0; i < 6; i++) {
-          this.chartData.datasets[0].data.push(0);
+        if (users.length < 7) {
+          for (let i = 0; i < 6; i++) {
+            this.chartData.datasets[0].data.push(0);
+          }
+        } else if (users.length > 7) {
+          for (let i = 0; i < users.length; i++) {
+            this.chartData.datasets[0].data.push(0);
+          }
         }
-      } else if (users.length > 7) {
+
+        console.log("sve nule", this.chartData.datasets[0].data);
+        for (const user of users) {
+          let userMonth = user.month;
+          let index = month - userMonth;
+          this.chartData.datasets[0].data[index] = user.count;
+        }
+        this.chartData.datasets[0].data.reverse();
+        console.log(users);
+        const letters = '0123456789ABCDEF'.split('');
         for (let i = 0; i < users.length; i++) {
-          this.chartData.datasets[0].data.push(0);
+          let color = '#';
+          for (let i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          this.chartData.datasets[0].borderColor.push(color);
+          color+="50";
+          this.chartData.datasets[0].backgroundColor.push(color);
         }
-      }
-
-      console.log("sve nule", this.chartData.datasets[0].data);
-      for (const user of users) {
-        let userMonth = user.month;
-        let index = month - userMonth;
-        this.chartData.datasets[0].data[index] = user.count;
-      }
-      this.chartData.datasets[0].data.reverse();
-      console.log(users);
-      const letters = '0123456789ABCDEF'.split('');
-      for (let i = 0; i < users.length; i++) {
-        let color = '#';
-        for (let i = 0; i < 6; i++ ) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        this.chartData.datasets[0].borderColor.push(color);
-        color+="50";
-        this.chartData.datasets[0].backgroundColor.push(color);
-      }
+      });
     }
   }
 }

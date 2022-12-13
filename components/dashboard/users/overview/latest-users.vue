@@ -16,14 +16,14 @@
           </th>
         </tr>
         </thead>
-        <tbody>
-        <tr
-          v-for="(user, index) in users"
-        >
-          <td>{{ user.name }}</td>
-          <td>{{ user.role.name}}</td>
-          <td>{{ diffs[index] }}</td>
-        </tr>
+        <tbody v-if="users.length">
+          <tr
+            v-for="(user, index) in users"
+          >
+            <td>{{ user.name }}</td>
+            <td>{{ user.role.name}}</td>
+            <td>{{ diffs[index] }}</td>
+          </tr>
         </tbody>
       </template>
     </v-simple-table>
