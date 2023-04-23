@@ -399,11 +399,13 @@ export default {
       await this.$axios(options)
         .then(response => {
           console.log("updated author: ",response.data);
+          console.log(this.model)
           this.model = response.data;
+          console.log("model: ",this.model);
           this.$notifier.showMessage({ content: 'Knjiga uspješno uklonjena', color: 'success' })
         })
         .catch(error => {
-          this.$notifier.showMessage({ content: 'Nešto je pošlo po krivu', color: 'error' })
+          thisn.$notifier.showMessage({ content: 'Nešto je pošlo po krivu', color: 'error' })
         });
     },
 

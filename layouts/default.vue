@@ -104,14 +104,6 @@
           tile
         >Moje Knjige</v-btn>
       </nuxt-link>
-      <nuxt-link class="d-none d-sm-flex"  to="/publikacije" style="text-decoration: none !important; height: 100%">
-        <v-btn
-          text
-          color="white"
-          height="100%"
-          tile
-        >Publikacije</v-btn>
-      </nuxt-link>
       <nuxt-link v-if="user.role !== undefined" class="d-none d-sm-flex"  to="/admin" style="text-decoration: none !important; height: 100%">
         <v-btn
           v-if="user.role.name === 'Super Admin' || user.role.name === 'Admin'"
