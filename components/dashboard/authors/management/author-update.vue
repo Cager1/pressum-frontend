@@ -162,7 +162,7 @@
               </v-col>
               <v-divider vertical></v-divider>
               <v-col  cols="10" offset="1" sm="6" offset-sm="0">
-                <div style="display:flex; flex-grow: revert; flex-wrap: wrap; ">
+                <div style="display:flex; flex-grow: revert; flex-wrap: wrap; gap: 10px;">
                   <span v-if="model.books" style="height: 200px; width: 150px !important;" v-for="(book, index) in model.books">
                     <v-img
                       v-for="image in book.files"
@@ -256,13 +256,13 @@ export default {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.searchAuthors(val)
-        console.log(this.model);
-        console.log(this.fields);
+        (this.model);
+        (this.fields);
       }, 700)
     },
 
     user (val) {
-      console.log(val)
+      (val)
     },
 
     model (val) {
@@ -303,7 +303,7 @@ export default {
     async addUser(author, user) {
       const options = {
         method: 'PUT',
-        url: 'updateAuthor/' + author,
+        url: 'authors/' + author,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -313,16 +313,12 @@ export default {
         }
       }
 
-      console.log(this.model);
-      console.log("url", options.url);
       await this.$axios(options).then(response => {
         this.userDialog = false
         this.model.user_uid = response.data.user_uid
-        console.log("a",   response)
         this.$notifier.showMessage({ content: 'Autor uspješno izmjenjen', color: 'success' })
       }).catch(error => {
         this.userDialog = false
-        console.log(" b ",error)
         this.$notifier.showMessage({ content: 'Greška prilikom izmjene autora', color: 'error' })
       })
     },
@@ -340,10 +336,8 @@ export default {
       await this.$axios.get('/authorUsers')
         .then(response => {
           this.authors = response.data
-          console.log(response.data)
         })
         .catch(error => {
-          console.log(error)
         })
     },
 
@@ -351,7 +345,7 @@ export default {
     async changeAuthor(author) {
       const options = {
         method: 'PUT',
-        url: 'updateAuthor/' + author.id,
+        url: 'authors/' + author.id,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -364,7 +358,7 @@ export default {
       }
       await this.$axios(options).then(response => {
         this.changeAuthorDialog = false
-        this.model.name = response.data
+        this.model = response.data
         this.$notifier.showMessage({ content: 'Autor uspješno izmjenjen', color: 'success' })
       }).catch(error => {
         this.changeAuthorDialog = false
@@ -395,17 +389,13 @@ export default {
         },
       }
 
-      console.log(options.url)
       await this.$axios(options)
         .then(response => {
-          console.log("updated author: ",response.data);
-          console.log(this.model)
           this.model = response.data;
-          console.log("model: ",this.model);
           this.$notifier.showMessage({ content: 'Knjiga uspješno uklonjena', color: 'success' })
         })
         .catch(error => {
-          thisn.$notifier.showMessage({ content: 'Nešto je pošlo po krivu', color: 'error' })
+          this.$notifier.showMessage({ content: 'Nešto je pošlo po krivu', color: 'error' })
         });
     },
 
@@ -422,7 +412,6 @@ export default {
         .then(response => {
           this.model = null
           this.getAuthor();
-          console.log("deleted author: ",response.data);
           this.$notifier.showMessage({ content: 'Autor uspješno uklonjen', color: 'success' })
         })
         .catch(error => {

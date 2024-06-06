@@ -36,7 +36,7 @@ export default {
         items: [
           {
             title: "Pregled",
-            components: ["author-dashboardBooksOverviewMy-books",]
+            components: ["author-dashboard-books-overview-my-books",]
           },
           {
             title: "Dodavanje",

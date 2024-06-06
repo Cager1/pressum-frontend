@@ -54,7 +54,7 @@ export default {
 
   computed: {
     books() {
-      return this.$store.getters["userStore/userGetter"].books;
+      return this.$store.getters["userStore/userGetter"].author.books;
     },
   },
 
@@ -84,10 +84,8 @@ export default {
         },
       }
 
-      console.log(options.url)
       await this.$axios(options)
         .then(response => {
-          console.log("updated user: ",response.data);
           this.model = response.data;
           this.$notifier.showMessage({ content: 'Knjiga uspješno uklonjena', color: 'success' })
         })

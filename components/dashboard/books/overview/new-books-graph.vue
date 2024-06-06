@@ -52,7 +52,6 @@ export default {
 
     async getNumberOfBooksFromLastSixMonths() {
       const books = await this.$axios.$get('/booksLastSixMonths');
-      console.log(books);
 
       if (books.length < 7) {
         for (let i = 0; i < 6; i++) {
@@ -84,8 +83,6 @@ export default {
         color+="50";
         this.chartData.datasets[0].backgroundColor.push(color);
       }
-
-      console.log(this.chartData.datasets[0].data);
     }
   }
 }

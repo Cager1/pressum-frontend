@@ -21,27 +21,8 @@
 
             ><v-icon class="mr-10">mdi-home</v-icon>Početna<v-spacer></v-spacer></v-btn>
           </nuxt-link>
-          <nuxt-link class="d-block mt-4" to="/knjige" style="text-decoration: none !important;">
-            <v-btn
-              tile
-              text
-              color="grey darken-2"
-              width="100%"
-              x-large
 
-            ><v-icon class="mr-10">mdi-book</v-icon>Moje Knjige<v-spacer></v-spacer></v-btn>
-          </nuxt-link>
-          <nuxt-link class="d-block mt-4" to="/publikacije" style="text-decoration: none !important;">
-            <v-btn
-              tile
-              text
-              color="grey darken-2"
-              width="100%"
-              x-large
-
-            ><v-icon class="mr-10">mdi-newspaper</v-icon>Publikacije<v-spacer></v-spacer></v-btn>
-          </nuxt-link>
-          <nuxt-link v-if="user.role !== undefined" class="d-block mt-4" to="/admin" style="text-decoration: none !important;">
+          <nuxt-link v-if="user.role !== undefined" class="d-block mt-4" to="/admin/knjige" style="text-decoration: none !important;">
             <v-btn
               v-if="user.role.name === 'Super Admin' || user.role.name === 'Admin'"
               tile
@@ -52,7 +33,7 @@
 
             ><v-icon class="mr-10">mdi-shield-account</v-icon>Admin<v-spacer></v-spacer></v-btn>
           </nuxt-link>
-          <a v-if="logged" class="d-block mt-4" :href="'http://localhost:8000/oauth/logout?redirect_to=http://localhost:3000'" style="text-decoration: none !important;">
+          <a v-if="logged" class="d-block mt-4" :href="'https://book-api.pressum.sum.ba/oauth/logout?redirect_to=https://book.pressum.sum.ba'" style="text-decoration: none !important;">
             <v-btn
               tile
               text
@@ -63,7 +44,7 @@
 
             ><v-icon class="mr-10">mdi-logout</v-icon>Odjava<v-spacer></v-spacer></v-btn>
           </a>
-          <a v-else class="d-block mt-4" :href="`http://localhost:8000/oauth/login?redirect_to=http://localhost:3000`" style="text-decoration: none !important;">
+          <a v-else class="d-block mt-4" :href="`https://book-api.pressum.sum.ba/oauth/login?redirect_to=https://book.pressum.sum.ba`" style="text-decoration: none !important;">
             <v-btn
               tile
               text
@@ -95,16 +76,7 @@
           tile
         >Početna</v-btn>
       </nuxt-link>
-      <nuxt-link v-if="user.role !== undefined" class="d-none d-sm-flex"  to="/knjige" style="text-decoration: none !important; height: 100%">
-        <v-btn
-          v-if="user.role.name !== 'Korisnik'"
-          text
-          color="white"
-          height="100%"
-          tile
-        >Moje Knjige</v-btn>
-      </nuxt-link>
-      <nuxt-link v-if="user.role !== undefined" class="d-none d-sm-flex"  to="/admin" style="text-decoration: none !important; height: 100%">
+      <nuxt-link v-if="user.role !== undefined" class="d-none d-sm-flex"  to="/admin/knjige" style="text-decoration: none !important; height: 100%">
         <v-btn
           v-if="user.role.name === 'Super Admin' || user.role.name === 'Admin'"
           text
@@ -113,7 +85,7 @@
           tile
         >Admin</v-btn>
       </nuxt-link>
-      <a v-if="logged"  class="d-none d-sm-flex" :href="'http://localhost:8000/oauth/logout?redirect_to=http://localhost:3000'"  style="text-decoration: none !important; height: 100%">
+      <a v-if="logged"  class="d-none d-sm-flex" :href="'https://book-api.pressum.sum.ba/oauth/logout?redirect_to=https://book.pressum.sum.ba'"  style="text-decoration: none !important; height: 100%">
       <v-btn
         tile
         text
@@ -122,7 +94,7 @@
         @click="logout"
       >Odjava</v-btn>
       </a>
-      <a v-else  class="d-none d-sm-flex" :href="`http://localhost:8000/oauth/login?redirect_to=http://localhost:3000`"  style="text-decoration: none !important; height: 100%">
+      <a v-else  class="d-none d-sm-flex" :href="`https://book-api.pressum.sum.ba/oauth/login?redirect_to=https://book.pressum.sum.ba`"  style="text-decoration: none !important; height: 100%">
         <v-btn
           tile
           text
@@ -140,8 +112,14 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-main style="min-height: 500px !important;" class="mb-16">
+    <v-main v-if="!$slots.default" style="min-height: 500px !important;" class="mb-16">
       <nuxt v-if="!loading" />
+      <v-overlay :value="loading">
+        <v-progress-circular indeterminate size="128" width="10"></v-progress-circular>
+      </v-overlay>
+    </v-main>
+    <v-main v-else style="min-height: 500px !important;" class="mb-16">
+      <slot v-if="!loading" />
       <v-overlay :value="loading">
         <v-progress-circular indeterminate size="128" width="10"></v-progress-circular>
       </v-overlay>
@@ -197,7 +175,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.user)
     this.loggedIn();
   },
   computed: {
@@ -216,7 +193,6 @@ export default {
     },
 
     async loggedIn() {
-      console.log(Object.keys(this.user).length)
       this.logged = Object.keys(this.$store.getters['userStore/userGetter']).length > 0;
     },
   }

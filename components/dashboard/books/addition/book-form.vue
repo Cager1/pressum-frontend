@@ -1,11 +1,10 @@
 <template>
   <v-card
     tile
-    style="padding:0 20px;"
+    class="pa-10"
     elevation="0"
-    max-width="700"
   >
-    <v-card-title style="color: #084776; padding-left: 0 !important;">Dodavanje knjige</v-card-title>
+    <v-card-title style="color: #084776; padding-left: 0 !important;">{{ title }}</v-card-title>
     <v-form
       @submit.prevent="submitBook"
     >
@@ -40,7 +39,7 @@
             :item-text="setName"
             item-value="id"
 
-            v-model="book.authors"
+            v-model="book.relations.authors.data"
 
           ></v-autocomplete>
 
@@ -61,32 +60,54 @@
             item-text="name"
             item-value="id"
 
-            v-model="book.sciences"
+            v-model="book.relations.sciences.data"
           ></v-autocomplete>
+          <client-only>
+            <VueEditor
+              v-model="book.impressum"
+              placeholder="Unesite impresum"
+            />
+          </client-only>
         </v-col>
         <v-col cols="12" md="6">
-          <dropzone
-            v-on:vdropzone-sending="sendingEventImages"
-            @vdropzone-success="onSuccess"
-            @vdropzone-complete="onComplete"
-            ref="myDropzone" id="dropzone" :options="dropzoneOptionsImages">
-            <div class="dropzone-custom-content">
-              <h3>Slika</h3>
+          <div class="d-flex mb-2 flex-grow-1">
+            <dropzone
+              style="width: 100%;"
+              v-on:vdropzone-sending="sendingEventImages"
+              @vdropzone-success="onSuccess"
+              @vdropzone-complete="onComplete"
+              ref="myDropzone" id="dropzone" :options="dropzoneOptionsImages">
+              <div class="dropzone-custom-content">
+                <h3>Slika</h3>
+              </div>
+            </dropzone>
+            <v-img v-if="book.image" style="margin-left: 10px; max-width: 200px" :src="book.image.file_url" height="250px"></v-img>
+          </div>
+          <div class="d-flex flex-column">
+            <dropzone
+              v-on:vdropzone-sending="sendingEventBooks"
+              @vdropzone-success="onSuccess"
+              @vdropzone-complete="onComplete"
+              ref="dropzone" id="foo" :options="dropzoneOptionsBooks">
+              <div class="dropzone-custom-content">
+                <h3>Knjige</h3>
+              </div>
+            </dropzone>
+            <div v-if="book.documents">
+              <template v-for="document in book.documents">
+                <template v-if="!document.cut_version">
+                  <v-icon >mdi mdi-file-pdf-box</v-icon> {{ document.name }}
+                </template>
+              </template>
             </div>
-          </dropzone>
+          </div>
 
-          <dropzone
-            v-on:vdropzone-sending="sendingEventBooks"
-            @vdropzone-success="onSuccess"
-            @vdropzone-complete="onComplete"
-            ref="dropzone" id="foo" :options="dropzoneOptionsBooks">
-            <div class="dropzone-custom-content">
-              <h3>Knjige</h3>
-            </div>
-          </dropzone>
         </v-col>
       </v-row>
-      <v-btn text color="white" style="background: red; margin-top:15px;" type="submit">Pošalji</v-btn>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn text color="white" style="background: red; margin-top:15px;" @click="reset">Odustani</v-btn>
+        <v-btn text color="white" style="background: #084776; margin-top:15px;" type="submit">{{ submit_text }}</v-btn>
+      </v-card-actions>
     </v-form>
   </v-card>
 </template>
@@ -95,6 +116,44 @@
 import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 export default {
+  // prop book
+  props: {
+    updating: {
+      type: Boolean,
+      default: false
+    },
+    title: {
+      type: String,
+      default: 'Dodavanje knjige'
+    },
+    submit_text: {
+      type: String,
+      default: 'Dodaj'
+    },
+    book: {
+      type: Object,
+      default: () => {
+        return {
+          'name': '',
+          'isbn': '',
+          'image': null,
+          'documents': null,
+          'impressum': '',
+          'relations': {
+            'authors': {
+              'method': 'sync',
+              'data': [],
+            },
+            'sciences': {
+              'method': 'sync',
+              'data': [],
+            },
+          }
+        }
+      }
+    }
+  },
+
   components: {
     Dropzone
   },
@@ -103,7 +162,7 @@ export default {
     dropzoneOptionsImages: {
       addRemoveLinks: true,
       autoProcessQueue: false,
-      url: "http://localhost:8000/api/files",
+      url: "https://book-api.pressum.sum.ba/api/files",
       acceptedFiles: 'image/*',
       thumbnailWidth: 150,
       thumbnailHeight: 150,
@@ -114,7 +173,7 @@ export default {
       addRemoveLinks: true,
       maxFiles: 1,
       autoProcessQueue: false,
-      url: "http://localhost:8000/api/files",
+      url: "https://book-api.pressum.sum.ba/api/files",
       acceptedFiles: '.pdf',
       thumbnailWidth: 100,
       thumbnailHeight: 300,
@@ -125,17 +184,10 @@ export default {
 
     dropZoneRefs: [],
     bookFileRefs: [],
-
     authors: [],
     sciences: [],
 
     book_id: 0,
-    book: {
-      'name': '',
-      'isbn': '',
-      'sciences': [],
-      'authors': [],
-    },
   }),
 
   mounted() {
@@ -146,18 +198,16 @@ export default {
     this.getBooks();
 
   },
-  methods: {
 
+  methods: {
     async getBooks() {
       await this.$axios.$get('/books').then(response => {
-        console.log('Books: ' , response);
       })
     },
 
     async getAuthors() {
       await this.$axios.$get('/authors').then(response => {
-        console.log("Authors: ", response);
-        this.authors = response.data;
+        this.authors = response;
       })
     },
 
@@ -167,22 +217,50 @@ export default {
 
     async getSciences() {
       await this.$axios.$get('/sciences').then(response => {
-        console.log("Sciences: ", response);
-        this.sciences = response.data;
+        this.sciences = response;
+      })
+    },
+
+    async updateBook() {
+
+      const options = {
+        method: 'PUT',
+        url: '/books/' + this.book.id ,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: this.book,
+      };
+      await this.$axios(options)
+        .then(response => {
+          console.log(response)
+          this.book_id = response.data.id;
+          this.uploadFiles();
+          this.reset();
+          this.$notifier.showMessage({ content: 'Knjiga uspješno uređena', color: 'success' })
+        })
+        .catch(error => {
+          this.$notifier.showMessage({ content: 'Greška pri uređivanju knjige', color: 'error' })
+        });
+    },
+
+    async addBook() {
+      await this.$axios.$post('/books', this.book).then(response => {
+        this.book_id = response.id;
+        this.uploadFiles();
+        this.reset();
+        this.$notifier.showMessage({ content: 'Knjiga uspješno dodana', color: 'success' })
+      }).catch((err) => {
+        this.$notifier.showMessage({ content: 'Greška prilikom dodavanja knjige', color: 'error' })
       })
     },
 
     async submitBook() {
-      await this.$axios.$post('/books', this.book).then(response => {
-        console.log(response);
-        this.book_id = response.id;
-        this.uploadFiles();
-        this.reset();
-      }).catch((err) => {
-        console.log(err);
-        this.reset();
-      })
-
+      if (this.updating) {
+        await this.updateBook();
+      } else {
+        await this.addBook();
+      }
     },
 
     uploadFiles() {
@@ -193,36 +271,25 @@ export default {
 
     // Reset forme povodom uploada
     reset() {
-      this.book.name = '';
-      this.book.isbn = '';
-      this.book.authors = [];
-      this.book.sciences = [];
-      // this.dropZoneRefs.removeAllFiles(true);
-      // this.bookFileRefs.removeAllFiles(true);
+      this.$emit('submit');
     },
 
     // Prilikom uspijeha spanja slike
     onSuccess(file, response) {
-      console.log('success:');
-      console.log(file)
-      console.log(response);
     },
 
     // Po završetku uploada
     onComplete(response) {
-      console.log('Complete:');
-      console.log(response)
     },
 
     // Prije slanja slike
     sendingEventImages(file, xhr, formData) {
-      console.log("Book id image", this.book_id)
       formData.append('book_id', this.book_id);
       formData.append('folder', 'images');
     },
     // Prije slanja knjige
     sendingEventBooks(file, xhr, formData) {
-      console.log("Book id book", this.book_id)
+      formData.append('name', file.name);
       formData.append('book_id', this.book_id);
       formData.append('folder', 'books');
     }
@@ -231,5 +298,12 @@ export default {
 </script>
 
 <style scoped>
-
+</style>
+<style>
+.ql-toolbar .ql-formats .ql-image {
+  display: none !important;
+}
+.ql-toolbar .ql-formats .ql-video {
+  display: none !important;
+}
 </style>

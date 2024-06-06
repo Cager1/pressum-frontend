@@ -90,7 +90,7 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <v-btn color="red" text @click="banUser">{{ ban_text }}</v-btn>
+<!--              <v-btn color="red" text @click="banUser">{{ ban_text }}</v-btn>-->
             </v-card-actions>
           </v-card>
         </v-expand-transition>
@@ -147,8 +147,6 @@ export default {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => {
         this.searchUsers(val)
-        console.log(this.model);
-        console.log(this.fields);
       }, 700)
     },
   },
@@ -175,7 +173,6 @@ export default {
         this.isLoading = true;
         const response = await this.$axios.get("/searchUsers/" + name);
         this.users = response.data;
-        console.log("korisnik",this.users[0].banned);
         if (this.users[0].banned) {
           this.ban_text = "Odbanuj";
           this.banned = true;
@@ -183,7 +180,6 @@ export default {
           this.ban_text = "Banuj";
         }
         this.isLoading = false;
-        console.log(this.users);
       }
     },
 
@@ -191,7 +187,6 @@ export default {
     async getAllRoles() {
       const response = await this.$axios.get("/userRoles");
       this.roles = response.data;
-      console.log("roles: ", this.roles);
     },
 
 
@@ -229,9 +224,7 @@ export default {
         this.banned = false;
       }
       this.text = response.data.message;
-      console.log("ban", response.data);
       this.snackbar = true;
-      console.log(response);
     },
   },
 }

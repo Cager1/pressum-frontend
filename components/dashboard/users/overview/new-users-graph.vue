@@ -53,9 +53,6 @@ export default {
     async getNumberOfUsersFromLastSixMonths() {
       await this.$axios.$get('/usersLastSixMonths').then(response => {
         const users = response;
-        console.log("last 6", users);
-
-        // get current month number
         let today = new Date();
         let month = today.getMonth() + 1;
 
@@ -68,15 +65,12 @@ export default {
             this.chartData.datasets[0].data.push(0);
           }
         }
-
-        console.log("sve nule", this.chartData.datasets[0].data);
         for (const user of users) {
           let userMonth = user.month;
           let index = month - userMonth;
           this.chartData.datasets[0].data[index] = user.count;
         }
         this.chartData.datasets[0].data.reverse();
-        console.log(users);
         const letters = '0123456789ABCDEF'.split('');
         for (let i = 0; i < users.length; i++) {
           let color = '#';

@@ -75,13 +75,16 @@ export default {
 
   mounted() {
     this.getUsers();
-
   },
+  // on update console log
+  updated() {
+    console.log('updated')
+  },
+
   methods: {
     async submitAuthor() {
       this.disabled = true;
       await this.$axios.$post('/authors', this.author).then(response => {
-        console.log("autor sumbited:", response);
         this.$notifier.showMessage({ content: 'Autor uspješno napravljen', color: 'success' })
         this.reset();
       }).catch((err) => {
@@ -98,7 +101,6 @@ export default {
     // get all users
     async getUsers() {
       this.users = await this.$axios.$get('/users');
-      console.log("users", this.users);
     },
 
     reset() {

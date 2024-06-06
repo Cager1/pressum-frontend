@@ -103,7 +103,7 @@ export default {
     dropzoneOptionsImages: {
       addRemoveLinks: true,
       autoProcessQueue: false,
-      url: "http://localhost:8000/api/files",
+      url: "https://book-api.pressum.sum.ba/api/files",
       acceptedFiles: 'image/*',
       thumbnailWidth: 150,
       thumbnailHeight: 150,
@@ -114,7 +114,7 @@ export default {
       addRemoveLinks: true,
       maxFiles: 1,
       autoProcessQueue: false,
-      url: "http://localhost:8000/api/files",
+      url: "https://book-api.pressum.sum.ba/api/files",
       acceptedFiles: '.pdf',
       thumbnailWidth: 100,
       thumbnailHeight: 300,
@@ -150,13 +150,11 @@ export default {
 
     async getBooks() {
       await this.$axios.$get('/books').then(response => {
-        console.log('Books: ' , response);
       })
     },
 
     async getAuthors() {
       await this.$axios.$get('/authors').then(response => {
-        console.log("Authors: ", response);
         this.authors = response.data;
       })
     },
@@ -167,19 +165,16 @@ export default {
 
     async getSciences() {
       await this.$axios.$get('/sciences').then(response => {
-        console.log("Sciences: ", response);
         this.sciences = response.data;
       })
     },
 
     async submitBook() {
       await this.$axios.$post('/books', this.book).then(response => {
-        console.log(response);
         this.book_id = response.id;
         this.uploadFiles();
         this.reset();
       }).catch((err) => {
-        console.log(err);
         this.reset();
       })
 
@@ -201,32 +196,22 @@ export default {
 
     // Prilikom uspijeha spanja slike
     onSuccess(file, response) {
-      console.log('success:');
-      console.log(file)
-      console.log(response);
-
     },
 
     // Po završetku uploada
     onCompleteImage(response) {
-      console.log('Complete:');
-      console.log(response)
     },
 
     onCompletePdf(response) {
-      console.log('Complete:');
-      console.log(response)
     },
 
     // Prije slanja slike
     sendingEventImages(file, xhr, formData) {
-      console.log("Book id image", this.book_id)
       formData.append('book_id', this.book_id);
       formData.append('folder', 'images');
     },
     // Prije slanja knjige
     sendingEventBooks(file, xhr, formData) {
-      console.log("Book id book", this.book_id)
       formData.append('book_id', this.book_id);
       formData.append('folder', 'books');
     }

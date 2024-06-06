@@ -11,6 +11,9 @@
             <th class="text-left">
               Broj korisnika
             </th>
+            <th class="text-left">
+              Akcije
+            </th>
           </tr>
           </thead>
           <tbody>
@@ -19,6 +22,16 @@
           >
             <td>{{ role.name }}</td>
             <td>{{ role.users_count}}</td>
+            <td>
+              <v-btn
+                v-if="role.users_count === 0"
+                color="red"
+                text
+                @click="deleteRole(role.id)"
+              >
+                Obriši
+              </v-btn>
+            </td>
           </tr>
           </tbody>
         </template>
@@ -38,7 +51,7 @@
             outlined
           ></v-text-field>
           <v-spacer></v-spacer>
-          <v-btn text  color="white" style="background: red" type="submit">Pošalji</v-btn>
+          <v-btn text  color="white" style="background: red" type="submit">Dodaj</v-btn>
         </v-form>
       </v-card>
     </v-col>
@@ -64,19 +77,25 @@ export default {
   methods: {
     async getRoles() {
       this.roles = await this.$axios.$get('/rolesWithUserCount');
-      console.log(this.roles);
     },
 
     async submitRole() {
       await this.$axios.$post('/createRole', this.role).then(response => {
-        console.log(response);
         this.$notifier.showMessage({ content: 'Uloga uspješno dodana', color: 'success' })
         this.getRoles();
         this.reset();
       }).catch((err) => {
-        console.log(err);
-        this.$notifier.showMessage({ content: 'Uloga nije dodana', color: 'success' })
+        this.$notifier.showMessage({ content: 'Neuspješno dodavanje uloge', color: 'error' })
         this.reset();
+      })
+    },
+
+    async deleteRole(id) {
+      await this.$axios.$delete(`/deleteRole/${id}`).then(response => {
+        this.$notifier.showMessage({ content: 'Uloga uspješno obrisana', color: 'success' })
+        this.getRoles();
+      }).catch((err) => {
+        this.$notifier.showMessage({ content: 'Neuspješno brisanje uloge', color: 'error' })
       })
     },
 

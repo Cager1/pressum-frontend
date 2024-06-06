@@ -34,13 +34,13 @@ export default {
   methods: {
 
     chartClick() {
-      console.log("Kliknuto");
+      ("Kliknuto");
     },
 
     // get getNumberOfBooksInSciences
     async getNumberOfBooksInSciences() {
       const sciences = await this.$axios.$get('/getNumberOfBooksInSciences');
-      console.log(sciences);
+      (sciences);
       for (const science of sciences) {
         this.chartData.labels.push(science.name);
         this.chartData.datasets[0].data.push(science.books_count);
@@ -55,7 +55,7 @@ export default {
         color+="50";
         this.chartData.datasets[0].backgroundColor.push(color);
       }
-      console.log(this.chartData.datasets[0].borderColor);
+      (this.chartData.datasets[0].borderColor);
     }
   }
 }

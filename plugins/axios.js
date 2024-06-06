@@ -10,7 +10,7 @@ export default function ({ $axios, redirect, app }) {
   $axios.onError((error) => {
     // const code = parseInt(error.response && error.response.status)
     // if (code === 401) {
-    //   window.location.href = `http://localhost:8000/oauth/login?redirect_to=${location.href}`
+    //   window.location.href = `https://book-api.pressum.sum.ba/oauth/login?redirect_to=${location.href}`
     // }
     // return Promise.resolve(error.response)
   })

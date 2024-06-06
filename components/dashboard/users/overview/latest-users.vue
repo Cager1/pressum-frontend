@@ -43,21 +43,17 @@ export default {
 
   mounted() {
     this.getLatestUsers();
+    // set current page query to 1
   },
 
   methods: {
     async getLatestUsers() {
       this.users = await this.$axios.$get('/latestUsers', );
-      console.log(this.users);
       for (const user of this.users) {
         let from = new Date(user.created_at);
         let diff = new Date() - from;
         this.diffs.push(this.dateDiff(diff));
       }
-
-      console.log(this.diffs);
-
-
     },
 
     dateDiff(miliseconds) {

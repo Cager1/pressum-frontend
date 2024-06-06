@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "export NODE_OPTIONS=--openssl-legacy-provider; nuxt",
+    "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
@@ -21,6 +21,7 @@
     "vue-chartjs": "^4.1.2",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
+    "vue2-editor": "^2.10.3",
     "vuetify": "^2.6.1",
     "vuex": "^3.6.2",
     "webpack": "^4.46.0"

@@ -26,7 +26,7 @@
                 <v-list-item v-for="(science, index) in sciences"
                              dense
                              :value="science.id"
-                             class="d-inline-block d-md-flex science-item"
+                             class="d-inline-flex d-md-flex science-item"
                              active-class="activeListItem"
                              style="background-color: rgb(240,240,240)"
                 >
@@ -47,7 +47,7 @@
                 <v-list-item v-for="(author, index) in authors"
                              dense
                              :value="author.id"
-                             class="d-inline-block d-md-flex science-item"
+                             class="d-inline-flex d-md-flex science-item"
                              active-class="activeListItem"
                              style="background-color: rgb(240,240,240)"
                 >
@@ -115,8 +115,8 @@
 
               <v-img
                 style="margin: 0;"
-                v-if="book.files[0]"
-                :src="book.files[0]['file_url']"
+                v-if="book.image"
+                :src="book.image.file_url"
                 height="250px"
               ></v-img>
               <v-divider></v-divider>
@@ -180,7 +180,7 @@ export default {
 
     filterSciences: [],
     filterAuthors: [],
-    querys: ['files', 'authors', 'sciences'],
+    querys: ['authors', 'sciences'],
 
     sciences: [],
 
@@ -321,7 +321,7 @@ export default {
       this.lastUsedQuery = 0;
       this.breadcrumbs = []
       await this.$axios.$get('/books?perPage=' + this.showNumberOfBooksModel + '&with[]=' + this.querys[0] + '&with[]=' +
-        this.querys[1] + '&with[]=' + this.querys[2] + '&page=' + page + "&sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc).then(response => {
+        this.querys[1] + '&page=' + page + "&sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc).then(response => {
         this.books = response;
         this.page = response.current_page;
         this.breadcrumbs.push({
@@ -329,15 +329,12 @@ export default {
           disabled: true
         })
         this.loading = false;
-        console.log(this.books.data[0].files[0].file_url)
       }).catch((err) => {
-        console.log(err)
       })
     },
 
     async filterBooksWithRelation(relation, column, filter) {
       if (filter.length === 0) {
-        console.log('filter', filter)
         await this.getBooks();
       } else {
         let query = 'books?perPage=' + this.showNumberOfBooksModel + '&filterRelation[' + relation + '][' + column + ']=a='
@@ -362,12 +359,10 @@ export default {
           query += '&with[]=' + q
         }
         await this.$axios.$get(query + "&sortBy=" + this.sortBy + "&sortDesc=" + this.sortDesc).then(response => {
-          // console.log(response);
           this.books = response;
           this.page = response.current_page;
           this.loading = false;
         }).catch((err) => {
-          console.log(err)
         })
       }
     },
@@ -385,27 +380,21 @@ export default {
           text: 'Pretraga: ' + value,
           disabled: true
         })
-        console.log(this.books)
       }).catch((err) => {
-        console.log(err)
       }).finally(() => (this.isLoading = false))
     },
 
     async getSciences() {
-      await this.$axios.$get('/sciences?perPage=-1').then(response => {
-        this.sciences = response.data;
-        console.log("sciences: ", response)
+      await this.$axios.$get('/sciences').then(response => {
+        this.sciences = response;
       }).catch((err) => {
-        console.log(err)
       })
     },
 
     async getAuthors() {
-      await this.$axios.$get('/authors?perPage=-1').then(response => {
-        this.authors = response.data;
-        console.log("authors: ", response)
+      await this.$axios.$get('/authors').then(response => {
+        this.authors = response;
       }).catch((err) => {
-        console.log(err)
       })
     },
 

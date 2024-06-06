@@ -3,7 +3,6 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
 
-
   head: {
     titleTemplate: '%s - pressum',
     title: 'pressum',
@@ -26,7 +25,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-
+    // main css from assets
+    '~/assets/main.css',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -44,6 +44,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    "vue2-editor/nuxt"
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -58,7 +59,8 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'http://localhost:8000/api',
+    // baseURL: 'https://book-api.pressum.sum.ba/api',
+    baseURL: 'https://book-api.pressum.sum.ba/api',
     credentials: true,
     headers: {
       Accept: "application/json"

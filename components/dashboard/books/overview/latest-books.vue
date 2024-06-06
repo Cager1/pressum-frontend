@@ -48,14 +48,12 @@ export default {
   methods: {
     async getLatestBooks() {
       this.books = await this.$axios.$get('/latestBooks');
-      console.log(this.books);
       for (const book of this.books) {
         let from = new Date(book.created_at);
         let diff = new Date() - from;
         this.diffs.push(this.dateDiff(diff));
       }
 
-      console.log(this.diffs);
 
 
     },

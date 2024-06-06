@@ -4,6 +4,7 @@
       <v-data-table
         :headers="headers"
         :items="items"
+        disable-sort
         :server-items-length="totalBooks"
         :options.sync="options"
         :loading="loading"
@@ -29,7 +30,7 @@
             <v-spacer></v-spacer>
             <v-dialog
               v-model="dialog"
-              max-width="500px"
+              max-width="1200px"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -42,96 +43,31 @@
                   Nova Knjiga
                 </v-btn>
               </template>
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5">{{ formTitle }}</span>
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          v-model="editedItem.name"
-                          label="Naslov"
-                        ></v-text-field>
-                        <v-text-field
-                          v-model="editedItem.isbn"
-                          label="ISBN"
-                        ></v-text-field>
-                        <v-autocomplete
-                          chips
-                          multiple
-                          deletable-chips
-                          clearable
-                          :items="authors"
-                          auto-select-first
-
-                          label="Autori"
-
-                          item-value="id"
-                          item-text="name"
-                          v-model="selected_authors"
-
-                        ></v-autocomplete>
-
-                        <v-autocomplete
-                          chips
-                          multiple
-                          deletable-chips
-                          clearable
-                          :items="sciences"
-                          auto-select-first
-
-                          label="Znanosti"
-
-                          item-text="name"
-                          item-value="id"
-                          v-model="selected_sciences"
-
-                        ></v-autocomplete>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="close"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    color="blue darken-1"
-                    text
-                    @click="updateBook"
-                  >
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
+                <book-form @submit="bookSubmited"/>
+            </v-dialog>
+            <v-dialog
+              v-model="editDialog"
+              max-width="1200px"
+            >
+              <book-form v-bind:book="editedItem" :updating="true" submit_text="Izmjeni" title="Izmjena knjige" @submit="itemEdited"/>
             </v-dialog>
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
-                <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                <v-card-title class="text-h5">Jeste li sigurni da želite izbrisati knjigu: <br> <strong>{{ editedItem.name }}</strong>?</v-card-title>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                  <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                  <v-spacer></v-spacer>
+                  <v-btn color="red darken-1" text @click="closeDelete">Odustani</v-btn>
+                  <v-btn color="blue darken-1" text @click="deleteItemConfirm">Potvrdi</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
           </v-toolbar>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:item.actions="{ item, index }">
           <v-icon
             small
             class="mr-2"
-            @click="editItem(item)"
+            @click="editItem(item, index)"
           >
             mdi-pencil
           </v-icon>
@@ -156,8 +92,11 @@
 </template>
 
 <script>
+import BookForm from "@/components/dashboard/books/addition/book-form.vue";
+
 export default {
   name: "book-table",
+  components: {BookForm},
   data() {
     return {
 
@@ -168,6 +107,7 @@ export default {
       loading: true,
 
       dialog: false,
+      editDialog: false,
       dialogDelete: false,
       search: "",
       headers: [
@@ -185,30 +125,13 @@ export default {
 
       ],
       editedIndex: -1,
-      editedItem: {
-        id: '',
-        name: "",
-        isbn: "",
-        relations: {
-          authors: {
-            data: [],
-          },
-          sciences: {
-            data: [],
-          },
-        },
-      },
-
-      defaultItem: {
-        name: "",
-        authors: [],
-        sciences: [],
-        isbn: "",
-      },
+      editedItem: {},
+      defaultItem: {},
       selected: [],
       singleSelect: "",
       items: [],
-      querys: ['files', 'authors', 'sciences'],
+      books: [],
+      querys: ['authors', 'sciences'],
 
       book: {
         'name': "",
@@ -247,17 +170,11 @@ export default {
       val || this.closeDelete()
     },
     search (val) {
-      if (val.length === 0) {
-        clearTimeout(this.timer)
-        this.getBooks();
-      } else {
-        clearTimeout(this.timer)
-        this.timer = setTimeout(() => {
-          this.searchBooks(val)
-        }, 700)
-      }
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.getBooks(val)
+      }, 700)
     },
-
     options: {
       handler() {
         this.getBooks();
@@ -273,14 +190,40 @@ export default {
     },
 
   methods: {
+
+    async bookSubmited() {
+      this.dialog = false
+      await this.getBooks()
+    },
+    async itemEdited() {
+      this.editDialog = false
+      await this.getBooks()
+    },
     async getBooks() {
       this.loading = true;
+      let searchObject = {}
+      // if search.length > 3 add column: 'name', and value: search to searchObject
+      if (this.search.length > 3) {
+        searchObject['column'] = 'name'
+        searchObject['value'] = '~=' + this.search
+      }
       await this.$axios
-        .get('/books?perPage=' + this.options.itemsPerPage + '&page=' + this.options.page + '&with[]=' + this.querys[0] + '&with[]=' +
-          this.querys[1] + '&with[]=' + this.querys[2])
+        .get('/books',
+          {
+            params: {
+              perPage: this.options.itemsPerPage,
+              page: this.options.page,
+              sortBy: 'created_at',
+              sortDesc: true,
+              'with': [this.querys[0], this.querys[1],],
+              ...searchObject
+
+            }
+          }
+        )
         .then(response => {
           const books = response.data.data;
-          console.log("books: ", response.data);
+          this.books = books
           let pushItems = []
           for (let i = 0; i < books.length; i++) {
             let cd = new Date(books[i].created_at);
@@ -306,80 +249,13 @@ export default {
             pushItems.push(column)
           }
           this.items = pushItems
-          console.log(this.items);
           this.loading = false;
           this.totalBooks = response.data.total
           this.close()
         })
         .catch(error => {
-          console.log(error);
         });
     },
-    async updateBook() {
-
-      this.book.name = this.editedItem.name
-      this.book.isbn = this.editedItem.isbn
-      this.book.relations.authors.data = this.selected_authors
-      this.book.relations.sciences.data = this.selected_sciences
-
-      const options = {
-        method: 'PUT',
-        url: '/books/' + this.editedItem.id ,
-        query: "XDEBUG_SESSION_START=PHPSTORM",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: this.book,
-      };
-      await this.$axios(options)
-        .then(response => {
-          console.log("updated book: ",response.data);
-          this.getBooks();
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-
-    async searchBooks(value) {
-      let query = '/books?column=name&value=~=' + value
-      for (const q of this.querys) {
-        query += '&with[]=' + q
-      }
-      await this.$axios.$get(query).then(response => {
-        const books = response.data;
-        console.log("books: ", books);
-        let pushItems = []
-        for (let i = 0; i < books.length; i++) {
-          let cd = new Date(books[i].created_at);
-          let cu = new Date(books[i].updated_at);
-          let column = {
-            id: books[i].id,
-            name: books[i].name,
-            isbn: books[i].isbn,
-            authors: "",
-            sciences: "",
-            created_at: cd.toLocaleDateString('hr-HR'),
-            updated_at: cu.toLocaleDateString('hr-HR'),
-          }
-
-          for (const author of books[i].authors) {
-            column.authors += author.name + " " + author.last_name + ", "
-          }
-          column.authors = column.authors.slice(0,-2)
-          for (const science of books[i].sciences) {
-            column.sciences += science.name + ", "
-          }
-          column.sciences = column.sciences.slice(0,-2)
-          pushItems.push(column)
-        }
-        this.items = pushItems
-        console.log(this.items);
-      }).catch((err) => {
-        console.log(err)
-      }).finally(() => (this.isLoading = false))
-    },
-
 
     // Get all authors and sciences
     async getAuthors() {
@@ -387,7 +263,6 @@ export default {
         .get('/authors')
         .then(response => {
           const authors = response.data.data;
-          console.log("authors: ", authors);
           for (let i = 0; i < authors.length; i++) {
             let column = {
               id: authors[i].id,
@@ -395,10 +270,8 @@ export default {
             }
             this.authors.push(column)
           }
-          console.log(this.authors);
         })
         .catch(error => {
-          console.log(error);
         });
     },
     async getSciences() {
@@ -406,7 +279,6 @@ export default {
         .get('/sciences')
         .then(response => {
           const sciences = response.data.data;
-          console.log("sciences: ", sciences);
           for (let i = 0; i < sciences.length; i++) {
             let column = {
               id: sciences[i].id,
@@ -414,10 +286,8 @@ export default {
             }
             this.sciences.push(column)
           }
-          console.log(this.sciences);
         })
         .catch(error => {
-          console.log(error);
         });
     },
 
@@ -427,15 +297,13 @@ export default {
         .get('/books/' + id + '/sciences')
         .then(response => {
           const sciences = response.data.data;
-          console.log("sciences: ", sciences);
+          ("sciences: ", sciences);
           this.selected_sciences = [];
           for (let i = 0; i < sciences.length; i++) {
             this.selected_sciences.push(sciences[i].id)
           }
-          console.log(this.selected_sciences);
         })
         .catch(error => {
-          console.log(error);
         });
     },
 
@@ -445,25 +313,41 @@ export default {
         .get('/books/' + id + '/authors')
         .then(response => {
           const authors = response.data.data;
-          console.log("authors: ", authors);
           this.selected_authors = []
           for (let i = 0; i < authors.length; i++) {
             this.selected_authors.push(authors[i].id)
           }
-          console.log(this.selected_authors);
         })
         .catch(error => {
-          console.log(error);
         });
     },
 
-    editItem (item) {
-      this.editedIndex = this.items.indexOf(item)
-      this.editedItem = Object.assign({}, item)
+    editItem(item, index) {
+      let sciences = this.books[index]?.sciences.map(science => science.id)
+      let authors = this.books[index]?.authors.map(author => author.id)
+      let image = this.books[index]?.image
+      let documents = this.books[index]?.documents
+      let book = {
+        id: item.id,
+        name: item.name,
+        isbn: item.isbn,
+        image: image,
+        documents: documents,
+        'relations': {
+          'authors': {
+            'method': 'sync',
+            'data': authors,
+          },
+          'sciences': {
+            'method': 'sync',
+            'data': sciences,
+          },
+        }
+      }
+      this.editedItem = Object.assign({}, book)
       this.getSciencesOfBook(this.editedItem.id)
       this.getAuthorsOfBook(this.editedItem.id)
-      console.log("edit item", this.editedItem);
-      this.dialog = true
+      this.editDialog = true
     },
 
     deleteItem (item) {
@@ -482,11 +366,9 @@ export default {
       await this.$axios
         .delete('/books/' + this.editedItem.id)
         .then(response => {
-          console.log("deleted book: ",response.data);
           this.getBooks();
         })
         .catch(error => {
-          console.log(error);
         });
     },
 
