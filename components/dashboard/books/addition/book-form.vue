@@ -11,13 +11,13 @@
       <v-row>
         <v-col cols="12" md="6">
           <v-text-field
-            label="Naslov"
+            label="Naslov*"
             v-model="book.name"
             color="#084776"
             outlined
           ></v-text-field>
           <v-text-field
-            label="ISBN"
+            label="ISBN*"
             v-model="book.isbn"
             color="#084776"
             outlined
@@ -229,6 +229,14 @@ export default {
     },
 
     async updateBook() {
+      if (this.book.name === '') {
+        this.$notifier.showMessage({ content: 'Naslov je obavezan', color: 'error' })
+        return;
+      }
+      if (this.book.isbn === '') {
+        this.$notifier.showMessage({ content: 'ISBN je obavezan', color: 'error' })
+        return;
+      }
       const options = {
         method: 'PUT',
         url: '/books/' + this.book.id ,
@@ -253,6 +261,14 @@ export default {
     },
 
     async addBook() {
+      if (this.book.name === '') {
+        this.$notifier.showMessage({ content: 'Naslov je obavezan', color: 'error' })
+        return;
+      }
+      if (this.book.isbn === '') {
+        this.$notifier.showMessage({ content: 'ISBN je obavezan', color: 'error' })
+        return;
+      }
       await this.$axios.$post('/books', this.book).then(response => {
         this.book_id = response.id;
         this.uploadFiles();
