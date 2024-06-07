@@ -103,7 +103,7 @@ export default {
     dropzoneOptionsImages: {
       addRemoveLinks: true,
       autoProcessQueue: false,
-      url: "https://book-api.pressum.sum.ba/api/files",
+      url: `${process.env.NUXT_API_URL}/files`,
       acceptedFiles: 'image/*',
       thumbnailWidth: 150,
       thumbnailHeight: 150,
@@ -114,7 +114,7 @@ export default {
       addRemoveLinks: true,
       maxFiles: 1,
       autoProcessQueue: false,
-      url: "https://book-api.pressum.sum.ba/api/files",
+      url: `${process.env.NUXT_API_URL}/files`,
       acceptedFiles: '.pdf',
       thumbnailWidth: 100,
       thumbnailHeight: 300,

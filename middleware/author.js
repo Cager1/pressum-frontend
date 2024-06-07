@@ -1,5 +1,5 @@
 export default async function ({ store, $axios, redirect }) {
-  await $axios.get('https://book-api.pressum.sum.ba/oauth/user', {withCredentials: true})
+  await $axios.get(`${process.env.NUXT_OAUTH_URL}/user`, {withCredentials: true})
     .then((response) => {
       store.commit('userStore/setUser', response.data)
       const user = store.getters['userStore/userGetter']
@@ -8,7 +8,7 @@ export default async function ({ store, $axios, redirect }) {
       }
     }).catch((error) => {
       if (error.response.status === 401 && Object.keys(store.getters['userStore/userGetter']).length === 0) {
-        redirect('https://book-api.pressum.sum.ba/oauth/login')
+        redirect(`${process.env.NUXT_OAUTH_URL}/login`)
       } else if (error.response.status === 401 && Object.keys(store.getters['userStore/userGetter']).length !== 0) {
         redirect('/')
       } else {

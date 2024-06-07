@@ -153,6 +153,7 @@
 <script>
 export default {
   name: 'IndexPage',
+  middleware: 'loggedIn',
   data: () => ({
 
     lastUsedQuery: 0,
@@ -202,6 +203,8 @@ export default {
     this.getBooks();
     this.getSciences();
     this.getAuthors();
+    // read user from store
+
   },
 
   watch: {

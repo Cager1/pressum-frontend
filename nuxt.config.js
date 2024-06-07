@@ -4,8 +4,8 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
 
   head: {
-    titleTemplate: '%s - pressum',
-    title: 'pressum',
+    titleTemplate: '%s - E-Knjige',
+    title: 'PRESSUM',
     htmlAttrs: {
       lang: 'en'
     },
@@ -34,7 +34,7 @@ export default {
     {src: '~/plugins/chart/chart.js', mode: 'client'},
     {src: '~/plugins/notifier.js', mode: 'client'},
     {src: '~/plugins/vee-validate.js', mode: 'client'},
-    {src: '~/plugins/axios.js', mode: 'client'}
+    {src: '~/plugins/axios.js', mode: 'client'},
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -44,7 +44,8 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    "vue2-editor/nuxt"
+    "vue2-editor/nuxt",
+    '@nuxtjs/dotenv'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -59,8 +60,7 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    // baseURL: 'https://book-api.pressum.sum.ba/api',
-    baseURL: 'https://book-api.pressum.sum.ba/api',
+    baseURL: process.env.NUXT_API_URL,
     credentials: true,
     headers: {
       Accept: "application/json"

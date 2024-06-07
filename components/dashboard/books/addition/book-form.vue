@@ -74,8 +74,10 @@
             <dropzone
               style="width: 100%;"
               v-on:vdropzone-sending="sendingEventImages"
-              @vdropzone-success="onSuccess"
-              @vdropzone-complete="onComplete"
+              @vdropzone-success="onImageSuccess"
+              @vdropzone-file-added="onImageFileAdded"
+              @vdropzone-removed-file="onImageFileRemoved"
+              @vdropzone-complete="onImageComplete"
               ref="myDropzone" id="dropzone" :options="dropzoneOptionsImages">
               <div class="dropzone-custom-content">
                 <h3>Slika</h3>
@@ -86,8 +88,10 @@
           <div class="d-flex flex-column">
             <dropzone
               v-on:vdropzone-sending="sendingEventBooks"
-              @vdropzone-success="onSuccess"
-              @vdropzone-complete="onComplete"
+              @vdropzone-success="onPDFSuccess"
+              @vdropzone-file-added="onPDFFileAdded"
+              @vdropzone-removed-file="onPDFFileRemoved"
+              @vdropzone-complete="onPDFComplete"
               ref="dropzone" id="foo" :options="dropzoneOptionsBooks">
               <div class="dropzone-custom-content">
                 <h3>Knjige</h3>
@@ -159,21 +163,24 @@ export default {
   },
   name: "book-form",
   data: () => ({
+    files_uploaded: 0,
+    files_added: 0,
     dropzoneOptionsImages: {
       addRemoveLinks: true,
       autoProcessQueue: false,
-      url: "https://book-api.pressum.sum.ba/api/files",
+      maxFiles: 1,
+      url: `${process.env.NUXT_API_URL}/files`,
       acceptedFiles: 'image/*',
       thumbnailWidth: 150,
       thumbnailHeight: 150,
-      maxFilesize: 2,
+      maxFilesize: 50,
       withCredentials: true,
     },
     dropzoneOptionsBooks: {
       addRemoveLinks: true,
       maxFiles: 1,
       autoProcessQueue: false,
-      url: "https://book-api.pressum.sum.ba/api/files",
+      url: `${process.env.NUXT_API_URL}/files`,
       acceptedFiles: '.pdf',
       thumbnailWidth: 100,
       thumbnailHeight: 300,
@@ -222,7 +229,6 @@ export default {
     },
 
     async updateBook() {
-
       const options = {
         method: 'PUT',
         url: '/books/' + this.book.id ,
@@ -233,10 +239,12 @@ export default {
       };
       await this.$axios(options)
         .then(response => {
-          console.log(response)
           this.book_id = response.data.id;
           this.uploadFiles();
-          this.reset();
+          if (this.files_added === 0) {
+            console.log(1)
+            this.reset()
+          }
           this.$notifier.showMessage({ content: 'Knjiga uspješno uređena', color: 'success' })
         })
         .catch(error => {
@@ -248,7 +256,9 @@ export default {
       await this.$axios.$post('/books', this.book).then(response => {
         this.book_id = response.id;
         this.uploadFiles();
-        this.reset();
+        if (this.files_added === 0) {
+          this.reset()
+        }
         this.$notifier.showMessage({ content: 'Knjiga uspješno dodana', color: 'success' })
       }).catch((err) => {
         this.$notifier.showMessage({ content: 'Greška prilikom dodavanja knjige', color: 'error' })
@@ -266,20 +276,56 @@ export default {
     uploadFiles() {
       this.dropZoneRefs.processQueue();
       this.bookFileRefs.processQueue();
+    },
 
+    removeFiles() {
+      this.dropZoneRefs.removeAllFiles();
+      this.bookFileRefs.removeAllFiles();
     },
 
     // Reset forme povodom uploada
     reset() {
       this.$emit('submit');
+      this.removeFiles();
+      this.files_uploaded = 0;
+      this.files_added = 0;
+
     },
 
-    // Prilikom uspijeha spanja slike
-    onSuccess(file, response) {
+    onPDFSuccess(file, response) {
+      this.files_uploaded++;
+      if (this.files_uploaded === this.files_added && this.files_added !== 0) {
+        this.reset();
+      }
     },
 
-    // Po završetku uploada
-    onComplete(response) {
+    onPDFComplete(response) {
+    },
+
+    onPDFFileAdded(file) {
+      this.files_added++
+    },
+
+    onPDFFileRemoved(file, error, xhr) {
+      this.files_added--;
+    },
+
+    onImageFileAdded(file) {
+      this.files_added++
+    },
+
+    onImageFileRemoved(file, error, xhr) {
+      this.files_added--;
+    },
+
+    onImageSuccess(file, response) {
+      this.files_uploaded++;
+      if (this.files_uploaded === this.files_added && this.files_added !== 0) {
+        this.reset();
+      }
+    },
+
+    onImageComplete(response) {
     },
 
     // Prije slanja slike

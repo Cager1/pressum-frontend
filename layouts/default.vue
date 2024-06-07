@@ -33,7 +33,7 @@
 
             ><v-icon class="mr-10">mdi-shield-account</v-icon>Admin<v-spacer></v-spacer></v-btn>
           </nuxt-link>
-          <a v-if="logged" class="d-block mt-4" :href="'https://book-api.pressum.sum.ba/oauth/logout?redirect_to=https://book.pressum.sum.ba'" style="text-decoration: none !important;">
+          <a v-if="logged" class="d-block mt-4" :href="`${oauthUrl}/logout?redirect_to=${appUrl}`" style="text-decoration: none !important;">
             <v-btn
               tile
               text
@@ -44,7 +44,7 @@
 
             ><v-icon class="mr-10">mdi-logout</v-icon>Odjava<v-spacer></v-spacer></v-btn>
           </a>
-          <a v-else class="d-block mt-4" :href="`https://book-api.pressum.sum.ba/oauth/login?redirect_to=https://book.pressum.sum.ba`" style="text-decoration: none !important;">
+          <a v-else class="d-block mt-4" :href="`${oauthUrl}/login?redirect_to=${appUrl}`" style="text-decoration: none !important;">
             <v-btn
               tile
               text
@@ -85,7 +85,7 @@
           tile
         >Admin</v-btn>
       </nuxt-link>
-      <a v-if="logged"  class="d-none d-sm-flex" :href="'https://book-api.pressum.sum.ba/oauth/logout?redirect_to=https://book.pressum.sum.ba'"  style="text-decoration: none !important; height: 100%">
+      <a v-if="logged" class="d-none d-sm-flex" :href="`${oauthUrl}/logout?redirect_to=${appUrl}`" style="text-decoration: none !important; height: 100%">
       <v-btn
         tile
         text
@@ -94,7 +94,7 @@
         @click="logout"
       >Odjava</v-btn>
       </a>
-      <a v-else  class="d-none d-sm-flex" :href="`https://book-api.pressum.sum.ba/oauth/login?redirect_to=https://book.pressum.sum.ba`"  style="text-decoration: none !important; height: 100%">
+      <a v-else  class="d-none d-sm-flex" :href="`${oauthUrl}/login?redirect_to=${appUrl}`"  style="text-decoration: none !important; height: 100%">
         <v-btn
           tile
           text
@@ -175,7 +175,9 @@ export default {
   },
 
   mounted() {
+    this.$store.dispatch("userStore/getUser");
     this.loggedIn();
+    console.log(this.$store.getters['userStore/userGetter'])
   },
   computed: {
     user() {
@@ -185,6 +187,12 @@ export default {
     loading() {
       return this.$store.getters["userStore/loadingGetter"];
     },
+    oauthUrl() {
+      return process.env.NUXT_OAUTH_URL;
+    },
+    appUrl() {
+      return process.env.NUXT_APP_URL;
+    }
   },
 
   methods: {

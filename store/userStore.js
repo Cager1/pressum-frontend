@@ -9,7 +9,7 @@ export const state = () => ({
 export const actions = {
   async getUser(context) {
     context.commit('setLoad', true)
-     await this.$axios.$get('https://book-api.pressum.sum.ba/oauth/user', {withCredentials: true})
+     await this.$axios.$get(`${process.env.NUXT_OAUTH_URL}/user`, {withCredentials: true})
        .then((response) => {
           context.commit('setUser', response)
          context.commit('setLoad', false)
@@ -42,6 +42,7 @@ export const mutations = {
   },
 
   setUser(state, user) {
+    console.log('setting user')
     state.user = user
   },
 

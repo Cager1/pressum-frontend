@@ -136,6 +136,9 @@ export default {
       book: {
         'name': "",
         'isbn': "",
+        'image': "",
+        'documents': "",
+        'impressum': "",
         'relations': {
           'authors': {
             'method': 'sync',
@@ -178,6 +181,14 @@ export default {
     options: {
       handler() {
         this.getBooks();
+      },
+      deep: true,
+    },
+
+    // watch editedItem changes and console log them
+    editedItem: {
+      handler() {
+        console.log('changed edited item', this.editedItem)
       },
       deep: true,
     },
@@ -327,12 +338,14 @@ export default {
       let authors = this.books[index]?.authors.map(author => author.id)
       let image = this.books[index]?.image
       let documents = this.books[index]?.documents
+      let impressum = this.books[index]?.impressum
       let book = {
         id: item.id,
         name: item.name,
         isbn: item.isbn,
         image: image,
         documents: documents,
+        impressum: impressum,
         'relations': {
           'authors': {
             'method': 'sync',
@@ -375,7 +388,7 @@ export default {
     close () {
       this.dialog = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedItem = this.book
         this.editedIndex = -1
       })
     },
@@ -383,18 +396,9 @@ export default {
     closeDelete () {
       this.dialogDelete = false
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedItem = this.book
         this.editedIndex = -1
       })
-    },
-
-    save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.items[this.editedIndex], this.editedItem)
-      } else {
-        this.items.push(this.editedItem)
-      }
-      this.close()
     },
   },
 }
