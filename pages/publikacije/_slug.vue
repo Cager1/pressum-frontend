@@ -2,18 +2,21 @@
   <v-container class="mt-4">
     <v-row>
       <v-col cols="6" md="4">
-        <v-img
-          style="margin: 0;"
-          v-if="book.files[0]"
-          :src="image"
-        ></v-img>
+        <v-img style="margin: 0" v-if="book.files[0]" :src="image"></v-img>
       </v-col>
       <v-divider vertical></v-divider>
-      <v-col cols="6" md="8" class="mt-0 d-flex flex-column justify-space-between">
+      <v-col
+        cols="6"
+        md="8"
+        class="mt-0 d-flex flex-column justify-space-between"
+      >
         <div>
           <h1 class="pa-3 pt-0">{{ book.name }}</h1>
           <v-card-subtitle v-text="'ISBN: ' + book.isbn"></v-card-subtitle>
-          <v-card-subtitle v-html="book.impressum"></v-card-subtitle>
+          <v-card-subtitle
+            class="book-impressum"
+            v-html="book.impressum"
+          ></v-card-subtitle>
         </div>
         <a :href="bookPDF" target="_blank">
           <v-btn color="primary" depressed text>Pregledaj knjigu</v-btn>
@@ -30,7 +33,7 @@ export default {
     let book;
     let bookPDF;
     let image;
-    await $axios.get(`/booksBySlug/${params.slug}`).then(response => {
+    await $axios.get(`/booksBySlug/${params.slug}`).then((response) => {
       book = response.data;
       // check if file url is image
       for (const file of book.files) {
@@ -48,15 +51,17 @@ export default {
     return { book, image, bookPDF };
   },
   data() {
-    return {
-    }
+    return {};
   },
 
   methods: {
     // check if file is image
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
+<style>
+.book-impressum .p {
+  margin-bottom: 0 !important;
+}
 </style>
