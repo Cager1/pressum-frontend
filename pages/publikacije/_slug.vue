@@ -3,6 +3,38 @@
     <v-row>
       <v-col cols="6" md="4">
         <v-img style="margin: 0" v-if="book.files[0]" :src="image"></v-img>
+        <v-btn
+          class="mt-1 rad-preuzmi-btn"
+          dark
+          color="#084776"
+          outlined
+          :href="`mailto:${book.author_email}`"
+          target="_blank"
+        >
+          <v-icon color="#EA4335" left>mdi-email-box</v-icon>
+          Email
+        </v-btn>
+        <v-btn
+          class="mt-1 rad-preuzmi-btn"
+          dark
+          color="#084776"
+          outlined
+          :href="`${book.author_google_scholar}`"
+          target="_blank"
+        >
+          <v-icon color="#4285F4" left>mdi-google</v-icon>
+          Google Scholar </v-btn
+        ><v-btn
+          class="mt-1 rad-preuzmi-btn"
+          dark
+          color="#084776"
+          outlined
+          :href="`${book.author_orcid}`"
+          target="_blank"
+        >
+          <v-icon color="#A6CE39" left>mdi-identifier</v-icon>
+          ORCID
+        </v-btn>
       </v-col>
       <v-divider vertical></v-divider>
       <v-col
