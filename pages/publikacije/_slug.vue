@@ -4,6 +4,7 @@
       <v-col cols="6" md="4">
         <v-img style="margin: 0" v-if="book.files[0]" :src="image"></v-img>
         <v-btn
+          v-if="book.author_email"
           class="mt-1 rad-preuzmi-btn"
           dark
           color="#084776"
@@ -15,6 +16,7 @@
           Email
         </v-btn>
         <v-btn
+          v-if="book.author_google_scholar"
           class="mt-1 rad-preuzmi-btn"
           dark
           color="#084776"
@@ -25,6 +27,7 @@
           <v-icon color="#4285F4" left>mdi-google</v-icon>
           Google Scholar </v-btn
         ><v-btn
+          v-if="book.author_orcid"
           class="mt-1 rad-preuzmi-btn"
           dark
           color="#084776"
