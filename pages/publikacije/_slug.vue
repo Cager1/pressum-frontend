@@ -53,9 +53,53 @@
             v-html="book.impressum"
           ></v-card-subtitle>
         </div>
-        <a :href="bookPDF" target="_blank">
-          <v-btn color="primary" depressed text>Pregledaj knjigu</v-btn>
-        </a>
+        <div>
+          <a v-if="!book.locked" :href="bookPDF" target="_blank">
+            <v-btn color="primary" depressed text>Pregledaj knjigu</v-btn>
+          </a>
+          <div v-if="book.locked">
+            <v-btn color="primary" depressed text @click="dialog = true">
+              Pregledaj knjigu
+            </v-btn>
+
+            <div class="text-center">
+              <v-dialog v-model="dialog" width="500">
+                <v-card>
+                  <v-card-title
+                    style="background-color: #084776; color: #fcfcfc"
+                    class="text-h5"
+                  >
+                    Knjiga zaključana
+                  </v-card-title>
+
+                  <v-card-text class="mt-3">
+                    <v-html
+                      >Knjiga je zaključana. Kontaktirajte autora kako biste
+                      dobili pristup knjizi.</v-html
+                    >
+                    <a
+                      :href="`mailto:${book.author_email}`"
+                      style="text-decoration: none"
+                      >Kontak autora</a
+                    >
+                    <!--<v-btn @click="openEmail" class="text-h12"
+                      >Kontakt autora</v-btn
+                    >-->
+                  </v-card-text>
+
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="dialog = false">
+                      OK
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
+          </div>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -86,11 +130,17 @@ export default {
     return { book, image, bookPDF };
   },
   data() {
-    return {};
+    return {
+      dialog: false,
+    };
   },
 
   methods: {
     // check if file is image
+    openEmail() {
+      // Generira mailto link s email adresom iz varijable contact_email
+      window.location.href = `mailto:${this.contact_email}`;
+    },
   },
 };
 </script>

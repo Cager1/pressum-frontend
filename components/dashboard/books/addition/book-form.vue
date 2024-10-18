@@ -115,9 +115,16 @@
               v-model="book.locked"
               color="indigo"
               label="Zaključano"
-              value="indigo"
               hide-details
             ></v-checkbox>
+            <v-text-field
+              v-if="book.locked"
+              class="mt-4"
+              label="Email za kontakt autora"
+              v-model="book.locked_contact"
+              color="#084776"
+              outlined
+            ></v-text-field>
             <div v-if="book.documents">
               <template v-for="document in book.documents">
                 <template v-if="!document.cut_version">
@@ -174,6 +181,7 @@ export default {
           isbn: "",
           author_email: "",
           author_google_scholar: "",
+          locked_contact: "",
           author_orcid: "",
           locked: false,
           image: null,

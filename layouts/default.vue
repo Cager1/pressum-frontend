@@ -130,6 +130,13 @@
       >
         <v-btn tile text color="white" height="100%">Prijava</v-btn>
       </a>
+      <nuxt-link
+        class="d-none d-sm-flex"
+        to="/"
+        style="text-decoration: none !important; height: 100%"
+      >
+        <v-btn text color="white" height="100%" tile>O sustavu</v-btn>
+      </nuxt-link>
       <v-btn
         plain
         class="d-sm-none mr-5"
