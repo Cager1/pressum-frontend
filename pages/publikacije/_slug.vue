@@ -146,7 +146,7 @@ export default {
 </script>
 
 <style>
-.book-impressum .p {
+.book-impressum p {
   margin-bottom: 0 !important;
 }
 </style>
