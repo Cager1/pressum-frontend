@@ -49,7 +49,7 @@
           <h1 class="pa-3 pt-0">{{ book.name }}</h1>
           <v-card-subtitle v-text="'ISBN: ' + book.isbn"></v-card-subtitle>
           <v-card-subtitle
-            class="book-impressum"
+            class="book_impressum"
             v-html="book.impressum"
           ></v-card-subtitle>
         </div>
@@ -146,7 +146,7 @@ export default {
 </script>
 
 <style>
-.book-impressum .p {
+.book_impressum p {
   margin-bottom: 0 !important;
 }
 </style>
