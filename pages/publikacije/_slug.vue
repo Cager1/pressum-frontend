@@ -78,7 +78,7 @@
                       dobili pristup knjizi.</v-html
                     >
                     <a
-                      :href="`mailto:${book.author_email}`"
+                      :href="`mailto:${book.locked_contact}`"
                       style="text-decoration: none"
                       >Kontak autora</a
                     >
