@@ -14,7 +14,7 @@
         <v-container>
           <v-row justify="center">
             <v-col cols="12" sm="6" md="4">
-              <img height="82" src="/img/sum-siva.svg"/>
+              <img height="82" src="/sum-siva.svg"/>
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <a href="https://pressum.sum.ba" target="_blank">
@@ -33,7 +33,7 @@
                   <div>
                     <v-icon size="30" color="white">mdi-phone</v-icon>
                     <span class="white--text" >
-                      <a href="tel:+38736337063" class="white--text">+387 63 389-500</a>
+                      <a href="tel:+38736337063" class="white--text">+387 36 337-063</a>
                     </span>
                   </div>
                 </v-col>

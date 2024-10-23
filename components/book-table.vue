@@ -319,6 +319,8 @@ export default {
       let author_email = this.books[index]?.author_email;
       let author_google_scholar = this.books[index]?.author_google_scholar;
       let author_orcid = this.books[index]?.author_orcid;
+      let locked = this.books[index]?.locked;
+      let locked_contact = this.books[index]?.locked_contact;
       let book = {
         id: item.id,
         name: item.name,
@@ -326,6 +328,8 @@ export default {
         author_email: author_email,
         author_google_scholar: author_google_scholar,
         author_orcid: author_orcid,
+        locked: locked,
+        locked_contact: locked_contact,
 
         image: image,
         documents: documents,
