@@ -75,6 +75,16 @@
               ></v-spacer
             ></v-btn>
           </a>
+          <nuxt-link
+            class="d-block mt-4"
+            to="/sustav"
+            style="text-decoration: none !important"
+          >
+            <v-btn tile text color="grey darken-2" width="100%" x-large
+              ><v-icon class="mr-10">mdi-information</v-icon>O sustavu<v-spacer
+              ></v-spacer
+            ></v-btn>
+          </nuxt-link>
         </v-col>
       </v-row>
     </v-navigation-drawer>
@@ -132,7 +142,7 @@
       </a>
       <nuxt-link
         class="d-none d-sm-flex"
-        to="/"
+        to="/sustav"
         style="text-decoration: none !important; height: 100%"
       >
         <v-btn text color="white" height="100%" tile>O sustavu</v-btn>
