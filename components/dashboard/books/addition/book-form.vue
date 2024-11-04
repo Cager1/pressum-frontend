@@ -117,6 +117,12 @@
               label="Zaključano"
               hide-details
             ></v-checkbox>
+            <v-checkbox
+              v-model="book.cut_version"
+              color="indigo"
+              label="Samo korice"
+              hide-details
+            ></v-checkbox>
             <v-text-field
               v-if="book.locked"
               class="mt-4"
@@ -184,6 +190,7 @@ export default {
           locked_contact: "",
           author_orcid: "",
           locked: false,
+          cut_version: false,
           image: null,
           documents: null,
           impressum: "",

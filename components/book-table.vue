@@ -321,6 +321,7 @@ export default {
       let author_orcid = this.books[index]?.author_orcid;
       let locked = this.books[index]?.locked;
       let locked_contact = this.books[index]?.locked_contact;
+      let cut_version = this.books[index]?.cut_version;
       let book = {
         id: item.id,
         name: item.name,
@@ -329,6 +330,7 @@ export default {
         author_google_scholar: author_google_scholar,
         author_orcid: author_orcid,
         locked: locked,
+        cut_version: cut_version,
         locked_contact: locked_contact,
 
         image: image,

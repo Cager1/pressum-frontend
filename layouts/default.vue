@@ -93,7 +93,7 @@
         <img
           :src="require('../assets/images/pressum-logo-white.svg')"
           alt="logo"
-          height="50"
+          height="40"
         />
       </nuxt-link>
       <nuxt-link to="/" style="height: 50%">
@@ -159,7 +159,7 @@
     <v-main
       v-if="!$slots.default"
       style="min-height: 500px !important"
-      class="mb-16 mt-0"
+      class="mb-16 mt-0 pt-10"
     >
       <nuxt v-if="!loading" />
       <v-overlay :value="loading">

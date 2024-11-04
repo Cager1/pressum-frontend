@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; justify-content: center">
+  <div style="display: flex; justify-content: center; margin-top: 30px">
     <v-html style="width: 80%; font-size: 18px; height: auto"
       >Sustav Knjige/e-Knjige u sklopu Sveučilišne nakladničke kuće PRESSUM
       stvoren je s ciljem da prati nakladničku djelatnost Sveučilišta u Mostaru
