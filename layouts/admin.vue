@@ -55,11 +55,14 @@ export default {
         title: "Znanosti",
         icon: "mdi-earth",
         to: "/admin/znanosti",
+      },
+      {
+        title: "Kategorije",
+        icon: "mdi-apps",
+        to: "/admin/kategorije",
       }
     ],
   }),
-
-
 }
 </script>
 

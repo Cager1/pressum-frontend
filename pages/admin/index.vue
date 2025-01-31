@@ -126,6 +126,24 @@ export default {
           },
         ]
       },
+      {
+        title: "Kategorije",
+        icon: "mdi-apps",
+        items: [
+          {
+            title: "Pregled",
+            components: ["dashboardSciencesOverviewBooks-in-sciences"]
+          },
+          {
+            title: "Upravljanje",
+            components: ["sciences-table"]
+          },
+          {
+            title: "Dodavanje",
+            components:  ["dashboardSciencesAdditionScience-form"]
+          },
+        ]
+      },
       // {
       //   title: "Pristupi",
       //   icon: "mdi-card-bulleted-off-outline",

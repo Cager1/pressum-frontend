@@ -60,6 +60,27 @@
             </v-list>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel style="background-color: rgb(240,240,240)">
+          <v-expansion-panel-header style="color: #f04f4f;"><h2>Tip knjige</h2></v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-list style="background-color: rgb(240,240,240)">
+              <v-list-item-group v-model="filterCategories"  multiple>
+                <v-list-item v-for="(category, index) in categories"
+                             dense
+                             :value="category.id"
+                             class="d-inline-flex d-md-flex science-item"
+                             active-class="activeListItem"
+                             style="background-color: rgb(240,240,240)"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title v-text="category.name">
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
 
     </v-col>
@@ -181,7 +202,8 @@ export default {
 
     filterSciences: [],
     filterAuthors: [],
-    querys: ['authors', 'sciences'],
+    filterCategories: [],
+    querys: ['authors', 'sciences', 'categories'],
 
     sciences: [],
 
@@ -194,6 +216,8 @@ export default {
 
     authors: [],
 
+    categories: [],
+
     breadcrumbs: [],
 
     searchRelation: 'name',
@@ -203,6 +227,7 @@ export default {
     this.getBooks();
     this.getSciences();
     this.getAuthors();
+    this.getCategories();
     // read user from store
 
   },
@@ -234,6 +259,20 @@ export default {
 
     },
 
+    filterCategories: function(val) {
+      if (val === null) clearTimeout(this.timer);
+      else {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.filterSciences = null;
+          this.lastUsedQuery = 3;
+          this.filterBooksWithRelation('categories', 'id', val)
+        }, 700)
+
+      }
+
+    },
+
     sortBy: function(val) {
       this.timer = setTimeout(() => {
         switch (this.lastUsedQuery) {
@@ -247,6 +286,9 @@ export default {
             this.filterBooksWithRelation('authors', 'id', this.filterAuthors);
             break;
           case 3:
+            this.filterBooksWithRelation('categories', 'id', this.filterCategories);
+            break;
+          case 4:
             this.searchBooks(this.search);
             break;
           default:
@@ -270,6 +312,9 @@ export default {
             this.filterBooksWithRelation('authors', 'id', this.filterAuthors);
             break;
           case 3:
+            this.filterBooksWithRelation('categories', 'id', this.filterCategories);
+            break;
+          case 4:
             this.searchBooks(this.search);
             break;
           default:
@@ -293,6 +338,9 @@ export default {
             this.filterBooksWithRelation('authors', 'id', this.filterAuthors);
             break;
           case 3:
+            this.filterBooksWithRelation('categories', 'id', this.filterCategories);
+            break;
+          case 4:
             this.searchBooks(this.search);
             break;
           default:
@@ -350,6 +398,8 @@ export default {
               this.authors.find(author => author.id === filterElement).last_name
           }  else if (relation === 'sciences') {
             name = this.sciences.find(science => science.id === filterElement).name
+          } else if (relation === 'categories') {
+            name = this.categories.find(categoriy => category.id === filterElement).name
           }
           this.breadcrumbs.push({
             text: name,
@@ -397,6 +447,13 @@ export default {
     async getAuthors() {
       await this.$axios.$get('/authors').then(response => {
         this.authors = response;
+      }).catch((err) => {
+      })
+    },
+
+    async getCategories() {
+      await this.$axios.$get('/categories').then(response => {
+        this.categories = response;
       }).catch((err) => {
       })
     },
