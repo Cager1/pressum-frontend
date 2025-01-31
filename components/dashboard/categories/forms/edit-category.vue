@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     async submitCategory() {
-      await this.$axios.$put(`/authors/${this.category.id}`, this.category).then(response => {
+      await this.$axios.$put(`/category/${this.category.id}`, this.category).then(response => {
         this.$notifier.showMessage({ content: 'Tip knjige uspješno ažuriran', color: 'success' })
         this.$emit('reset-categories');
         this.dialog = false
