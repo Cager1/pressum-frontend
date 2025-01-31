@@ -117,7 +117,7 @@ export default {
       singleSelect: "",
       items: [],
       books: [],
-      querys: ["authors", "sciences"],
+      querys: ["authors", "sciences", 'categories'],
 
       book: {
         name: "",
@@ -210,7 +210,7 @@ export default {
             page: this.options.page,
             sortBy: "created_at",
             sortDesc: true,
-            with: [this.querys[0], this.querys[1]],
+            with: [this.querys[0], this.querys[1], this.querys[2]],
             ...searchObject,
           },
         })
@@ -310,9 +310,23 @@ export default {
         .catch((error) => {});
     },
 
+    async getCategoriesOfBook(id) {
+      await this.$axios
+        .get("/books/" + id + "/categories")
+        .then((response) => {
+          const categories = response.data.data;
+          this.selected_categories = [];
+          for (let i = 0; i < categories.length; i++) {
+            this.selected_categories.push(categories[i].id);
+          }
+        })
+        .catch((error) => {});
+    },
+
     editItem(item, index) {
       let sciences = this.books[index]?.sciences.map((science) => science.id);
       let authors = this.books[index]?.authors.map((author) => author.id);
+      let categories = this.books[index]?.categories.map((category) => category.id);
       let image = this.books[index]?.image;
       let documents = this.books[index]?.documents;
       let impressum = this.books[index]?.impressum;
@@ -345,11 +359,16 @@ export default {
             method: "sync",
             data: sciences,
           },
+          categories: {
+            method: "sync",
+            data: categories,
+          }
         },
       };
       this.editedItem = Object.assign({}, book);
       this.getSciencesOfBook(this.editedItem.id);
       this.getAuthorsOfBook(this.editedItem.id);
+      this.getCategoriesOfBook(this.editedItem.id);
       this.editDialog = true;
     },
 

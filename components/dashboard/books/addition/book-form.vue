@@ -32,7 +32,20 @@
             item-value="id"
             v-model="book.relations.authors.data"
           ></v-autocomplete>
-
+          <v-autocomplete
+            chips
+            multiple
+            deletable-chips
+            clearable
+            color="#084776"
+            outlined
+            auto-select-first
+            label="Kategorije"
+            :items="categories"
+            :item-text="setName"
+            item-value="id"
+            v-model="book.relations.categories.data"
+          ></v-autocomplete>
           <v-autocomplete
             chips
             multiple
@@ -203,6 +216,10 @@ export default {
               method: "sync",
               data: [],
             },
+            categories: {
+              method: "sync",
+              data: [],
+            },
           },
         };
       },
@@ -243,6 +260,7 @@ export default {
     bookFileRefs: [],
     authors: [],
     sciences: [],
+    categories: [],
 
     book_id: 0,
   }),
@@ -253,11 +271,18 @@ export default {
     this.getAuthors();
     this.getSciences();
     this.getBooks();
+    this.getCategories();
   },
 
   methods: {
     async getBooks() {
       await this.$axios.$get("/books").then((response) => {});
+    },
+
+    async getCategories() {
+      await this.$axios.$get("/categories").then((response) => {
+        this.categories = response;
+      });
     },
 
     async getAuthors() {
