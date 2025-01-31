@@ -42,7 +42,7 @@
             auto-select-first
             label="Kategorije"
             :items="categories"
-            :item-text="setName"
+            item-text="name"
             item-value="id"
             v-model="book.relations.categories.data"
           ></v-autocomplete>
