@@ -9,7 +9,7 @@
         dark
         v-on="on"
       >
-        Novi tip kategorije
+        Nova kategorija
       </v-btn>
     </template>
     <v-card
@@ -18,7 +18,7 @@
       max-width="500"
 
     >
-      <v-card-title style="color: #084776; padding-left: 0 !important;">Dodavanje tipa knjige</v-card-title>
+      <v-card-title style="color: #084776; padding-left: 0 !important;">Dodavanje kategorije knjige</v-card-title>
       <v-form
         @submit.prevent="submitCategory"
       >

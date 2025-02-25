@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
     <v-tabs class="d-none d-md-flex" vertical icons-and-text>
-      <v-ta v-for="item in items">
+      <v-tab v-for="item in items">
         {{ item.title }}
         <v-icon>{{ item.icon }}</v-icon>
-      </v-ta>
+      </v-tab>
       <v-tab-item :transition="false" class="pl-sm-15" v-for="(item, index) in items" >
         <v-card-title style="background: #084776; color: white"> {{ item.title }}</v-card-title>
         <v-tabs color="red">

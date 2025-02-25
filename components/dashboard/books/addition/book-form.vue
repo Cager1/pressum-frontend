@@ -329,7 +329,6 @@ export default {
           this.book_id = response.data.id;
           this.uploadFiles();
           if (this.files_added === 0) {
-            console.log(1);
             this.reset();
           }
           this.$notifier.showMessage({

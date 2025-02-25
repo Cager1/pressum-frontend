@@ -68,7 +68,7 @@ export default {
       search: "",
       headers: [
         {
-          text: "Tip kategorije",
+          text: "Kategorija",
           value: "name",
         },
         {text: 'Akcije', value: 'actions', sortable: false },

@@ -115,17 +115,8 @@ export default {
     await $axios.get(`/booksBySlug/${params.slug}`).then((response) => {
       book = response.data;
       // check if file url is image
-      for (const file of book.files) {
-        if (file.mimetype) {
-          if (file.mimetype.startsWith("image")) {
-            image = file.file_url;
-          } else if (file.mimetype.endsWith("pdf")) {
-            if (file.cut_version === 1) {
-              bookPDF = file.file_url;
-            }
-          }
-        }
-      }
+      image = book.image.file_url;
+      book.cut_version ? bookPDF = book.book_cut_version.file_url : bookPDF = book.book_full_version.file_url;
     });
     return { book, image, bookPDF };
   },

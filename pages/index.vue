@@ -239,6 +239,7 @@ export default {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.filterAuthors = null;
+          this.filterCategories = null;
           this.lastUsedQuery = 1;
           this.filterBooksWithRelation('sciences', 'id', val)
         }, 700);
@@ -251,6 +252,7 @@ export default {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.filterSciences = null;
+          this.filterCategories = null;
           this.lastUsedQuery = 2;
           this.filterBooksWithRelation('authors', 'id', val)
         }, 700)
@@ -265,6 +267,7 @@ export default {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
           this.filterSciences = null;
+          this.filterAuthors = null;
           this.lastUsedQuery = 3;
           this.filterBooksWithRelation('categories', 'id', val)
         }, 700)
@@ -399,7 +402,7 @@ export default {
           }  else if (relation === 'sciences') {
             name = this.sciences.find(science => science.id === filterElement).name
           } else if (relation === 'categories') {
-            name = this.categories.find(categoriy => category.id === filterElement).name
+            name = this.categories.find(category => category.id === filterElement).name
           }
           this.breadcrumbs.push({
             text: name,

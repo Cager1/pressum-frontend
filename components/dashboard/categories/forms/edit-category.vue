@@ -18,7 +18,7 @@
       max-width="500"
 
     >
-      <v-card-title style="color: #084776; padding-left: 0 !important;">Ažuriranje tipa knjige</v-card-title>
+      <v-card-title style="color: #084776; padding-left: 0 !important;">Ažuriranje kategorije knjiga</v-card-title>
       <v-form
         @submit.prevent="submitCategory"
       >
@@ -55,12 +55,12 @@ export default {
   methods: {
     async submitCategory() {
       await this.$axios.$put(`/categories/${this.category.id}`, this.category).then(response => {
-        this.$notifier.showMessage({ content: 'Tip knjige uspješno ažuriran', color: 'success' })
+        this.$notifier.showMessage({ content: 'Kategorija knjige uspješno ažurirana', color: 'success' })
         this.$emit('reset-categories');
         this.dialog = false
       }).catch((err) => {
         this.reset();
-        this.$notifier.showMessage({ content: 'Greška prilikom ažuriranja tipa knjige', color: 'error' })
+        this.$notifier.showMessage({ content: 'Greška prilikom ažuriranja kategorije knjige', color: 'error' })
       })
     },
   }

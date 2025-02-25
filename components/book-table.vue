@@ -105,6 +105,7 @@ export default {
         },
         { text: "Autori", value: "authors" },
         { text: "Znanosti", value: "sciences" },
+        { text: "Kategorije", value: "categories" },
         { text: "ISBN", value: "isbn", sortable: false },
         { text: "Kr", value: "created_at" },
         { text: "Azuriran", value: "updated_at" },
@@ -227,6 +228,7 @@ export default {
               isbn: books[i].isbn,
               authors: "",
               sciences: "",
+              categories: "",
               created_at: cd.toLocaleDateString("hr-HR"),
               updated_at: cu.toLocaleDateString("hr-HR"),
             };
@@ -234,11 +236,22 @@ export default {
             for (const author of books[i].authors) {
               column.authors += author.name + " " + author.last_name + ", ";
             }
-            column.authors = column.authors.slice(0, -2);
+            // if column.authors is not empty, remove last ','
+            if (column.authors) column.authors = column.authors.slice(0, -2);
+
+
             for (const science of books[i].sciences) {
               column.sciences += science.name + ", ";
             }
-            column.sciences = column.sciences.slice(0, -2);
+            // if column.sciences is not empty, remove last ','
+            if (column.sciences) column.sciences = column.sciences.slice(0, -2);
+
+            for (const category of books[i].categories) {
+              column.categories += category.name + ", ";
+            }
+            // if column.categories is not empty, remove last ','
+            if (column.categories) column.categories = column.categories.slice(0, -2);
+
             pushItems.push(column);
           }
           this.items = pushItems;
@@ -396,7 +409,7 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = this.book;
+        // this.editedItem = this.book;
         this.editedIndex = -1;
       });
     },
