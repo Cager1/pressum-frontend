@@ -80,7 +80,7 @@
                     <a
                       :href="`mailto:${book.locked_contact}`"
                       style="text-decoration: none"
-                      >Kontak autora</a
+                      >Kontakt autora</a
                     >
                     <!--<v-btn @click="openEmail" class="text-h12"
                       >Kontakt autora</v-btn
