@@ -82,9 +82,6 @@
                       style="text-decoration: none"
                       >Kontakt autora</a
                     >
-                    <!--<v-btn @click="openEmail" class="text-h12"
-                      >Kontakt autora</v-btn
-                    >-->
                   </v-card-text>
 
                   <v-divider></v-divider>
