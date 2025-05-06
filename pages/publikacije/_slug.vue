@@ -1,7 +1,7 @@
 <template>
   <v-container class="mt-4">
     <v-row>
-      <v-col cols="6" md="4">
+      <v-col cols="12" sm="6" md="4">
         <v-img style="margin: 0" v-if="book.files[0]" :src="image"></v-img>
         <v-btn
           v-if="book.author_email"
@@ -41,7 +41,8 @@
       </v-col>
       <v-divider vertical></v-divider>
       <v-col
-        cols="6"
+        cols="12"
+        sm="6"
         md="8"
         class="mt-0 d-flex flex-column justify-space-between"
       >

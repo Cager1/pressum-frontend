@@ -1,5 +1,5 @@
 <template>
-  <v-footer dark padless absolute app>
+  <v-footer dark padless>
     <v-card tile class="lighten-1 white--text" color="#4C4C4C" width="100%">
       <v-card-text class="white--text pt-0">
         <v-container>
