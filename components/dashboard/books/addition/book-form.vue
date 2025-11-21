@@ -124,6 +124,20 @@
                 <h3>Knjige</h3>
               </div>
             </dropzone>
+            <dropzone
+                v-on:vdropzone-sending="sendingEventBookChapters"
+                @vdropzone-success="onPDFSuccess"
+                @vdropzone-file-added="onPDFFileAdded"
+                @vdropzone-removed-file="onPDFFileRemoved"
+                @vdropzone-complete="onPDFComplete"
+                ref="chapters"
+                id="chapters"
+                :options="dropzoneOptionsBookChapters"
+            >
+              <div class="dropzone-custom-content">
+                <h3>Poglavlja</h3>
+              </div>
+            </dropzone>
             <v-checkbox
               v-model="book.locked"
               color="indigo"
@@ -149,6 +163,13 @@
                 <template v-if="!document.cut_version">
                   <v-icon>mdi mdi-file-pdf-box</v-icon> {{ document.name }}
                 </template>
+              </template>
+            </div>
+            <v-divider class="my-4"></v-divider>
+            <v-card-title>Poglavlja</v-card-title>
+            <div v-if="book.book_chapters">
+              <template v-for="document in book.book_chapters">
+                  <p><v-icon>mdi mdi-file-pdf-box</v-icon> {{ document.name }}</p>
               </template>
             </div>
           </div>
@@ -255,9 +276,20 @@ export default {
       maxFilesize: 50,
       withCredentials: true,
     },
+    dropzoneOptionsBookChapters: {
+      addRemoveLinks: true,
+      autoProcessQueue: false,
+      url: `${process.env.NUXT_API_URL}/files`,
+      acceptedFiles: ".pdf",
+      thumbnailWidth: 100,
+      thumbnailHeight: 300,
+      maxFilesize: 50,
+      withCredentials: true,
+    },
 
     dropZoneRefs: [],
     bookFileRefs: [],
+    chapterFileRefs: [],
     authors: [],
     sciences: [],
     categories: [],
@@ -268,6 +300,7 @@ export default {
   mounted() {
     this.dropZoneRefs = this.$refs.myDropzone;
     this.bookFileRefs = this.$refs.dropzone;
+    this.chapterFileRefs = this.$refs.chapters;
     this.getAuthors();
     this.getSciences();
     this.getBooks();
@@ -391,11 +424,14 @@ export default {
     uploadFiles() {
       this.dropZoneRefs.processQueue();
       this.bookFileRefs.processQueue();
+      this.chapterFileRefs.processQueue();
+
     },
 
     removeFiles() {
       this.dropZoneRefs.removeAllFiles();
       this.bookFileRefs.removeAllFiles();
+      this.chapterFileRefs.removeAllFiles();
     },
 
     // Reset forme povodom uploada
@@ -450,6 +486,11 @@ export default {
       formData.append("name", file.name);
       formData.append("book_id", this.book_id);
       formData.append("folder", "books");
+    },
+    sendingEventBookChapters(file, xhr, formData) {
+      formData.append("name", file.name);
+      formData.append("book_id", this.book_id);
+      formData.append("folder", "chapters");
     },
   },
 };

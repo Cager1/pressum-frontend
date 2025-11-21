@@ -342,6 +342,7 @@ export default {
       let categories = this.books[index]?.categories.map((category) => category.id);
       let image = this.books[index]?.image;
       let documents = this.books[index]?.documents;
+      let book_chapters = this.books[index]?.book_chapters;
       let impressum = this.books[index]?.impressum;
       let author_email = this.books[index]?.author_email;
       let author_google_scholar = this.books[index]?.author_google_scholar;
@@ -362,6 +363,7 @@ export default {
 
         image: image,
         documents: documents,
+        book_chapters: book_chapters,
         impressum: impressum,
         relations: {
           authors: {

@@ -55,9 +55,18 @@
           ></v-card-subtitle>
         </div>
         <div>
-          <a v-if="!book.locked" :href="bookPDF" target="_blank">
-            <v-btn color="primary" depressed text>Pregledaj knjigu</v-btn>
-          </a>
+          <div v-if="!book.locked">
+            <a :href="bookPDF" target="_blank">
+              <v-btn color="primary" depressed text>Pregledaj knjigu</v-btn>
+            </a>
+            <div v-for="chapter in book.book_chapters" :key="chapter.id" class="mt-2">
+              <a :href="chapter.file_url" target="_blank">
+                <v-btn color="secondary" depressed text>
+                  Pregledaj poglavlje: {{ chapter.name }}
+                </v-btn>
+              </a>
+            </div>
+          </div>
           <div v-if="book.locked">
             <v-btn color="primary" depressed text @click="dialog = true">
               Pregledaj knjigu
@@ -110,13 +119,15 @@ export default {
     let book;
     let bookPDF;
     let image;
+    let book_chapters;
     await $axios.get(`/booksBySlug/${params.slug}`).then((response) => {
       book = response.data;
       // check if file url is image
       image = book.image?.file_url;
       book.cut_version ? bookPDF = book.book_cut_version?.file_url : bookPDF = book.book_full_version?.file_url;
+      book_chapters = book.chapters;
     });
-    return { book, image, bookPDF };
+    return { book, image, bookPDF, book_chapters };
   },
   data() {
     return {
